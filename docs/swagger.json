@@ -1,0 +1,235 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/account/auth/current": {
+            "get": {
+                "summary": "当前用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "API TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/basic.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.CurrentUserResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/account/auth/login": {
+            "post": {
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "上传图片文件",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/basic.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.LoginResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/account/auth/register": {
+            "post": {
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "上传图片文件",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.RegisterReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/basic.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handler.RegisterResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/image/hash/bind": {
+            "post": {
+                "summary": "绑定图片hash信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "仓库名称",
+                        "name": "path",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "上传图片文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/basic.Resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/image/hash/similar": {
+            "get": {
+                "summary": "查询图片",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "仓库名称",
+                        "name": "path",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "上传图片文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/basic.Resp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "basic.Resp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "0成功,1请求参数错误,2权限错误,-1服务异常",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "数据"
+                },
+                "msg": {
+                    "description": "错误信息",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CurrentUserResp": {
+            "type": "object"
+        },
+        "handler.LoginReq": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.LoginResp": {
+            "type": "object",
+            "properties": {
+                "token_info": {
+                    "$ref": "#/definitions/model.TokenInfo"
+                }
+            }
+        },
+        "handler.RegisterReq": {
+            "type": "object"
+        },
+        "handler.RegisterResp": {
+            "type": "object"
+        },
+        "model.TokenInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

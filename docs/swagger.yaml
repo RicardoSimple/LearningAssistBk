@@ -1,0 +1,142 @@
+definitions:
+  basic.Resp:
+    properties:
+      code:
+        description: 0成功,1请求参数错误,2权限错误,-1服务异常
+        type: integer
+      data:
+        description: 数据
+      msg:
+        description: 错误信息
+        type: string
+    type: object
+  handler.CurrentUserResp:
+    type: object
+  handler.LoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handler.LoginResp:
+    properties:
+      token_info:
+        $ref: '#/definitions/model.TokenInfo'
+    type: object
+  handler.RegisterReq:
+    type: object
+  handler.RegisterResp:
+    type: object
+  model.TokenInfo:
+    properties:
+      id:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /account/auth/current:
+    get:
+      parameters:
+      - description: API TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/basic.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.CurrentUserResp'
+              type: object
+      summary: 当前用户信息
+  /account/auth/login:
+    post:
+      parameters:
+      - description: 上传图片文件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/basic.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.LoginResp'
+              type: object
+      summary: 用户登录
+  /account/auth/register:
+    post:
+      parameters:
+      - description: 上传图片文件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/basic.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.RegisterResp'
+              type: object
+      summary: 用户注册
+  /image/hash/bind:
+    post:
+      parameters:
+      - description: 仓库名称
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 上传图片文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/basic.Resp'
+      summary: 绑定图片hash信息
+  /image/hash/similar:
+    get:
+      parameters:
+      - description: 仓库名称
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 上传图片文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/basic.Resp'
+      summary: 查询图片
+swagger: "2.0"
