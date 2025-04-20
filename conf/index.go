@@ -62,7 +62,7 @@ func Init(ctx context.Context) {
 		//Git: GitHubConfig{
 		//	UserName: "RicardoSimple",
 		//	Repo:     "pic-store",
-		//	Token:    "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",
+		//	Token:    "",
 		//	Message:  "add image",
 		//},
 		//Neo4j: Neo4jConfig{
