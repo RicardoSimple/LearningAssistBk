@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"ar-app-api/consts"
 	"time"
 
 	"gorm.io/gorm"
@@ -26,6 +27,9 @@ type User struct {
 	Status      string       `gorm:"size:20"`  // 账户状态 (例如：active, inactive, banned)
 	LastLogin   time.Time    // 最后登录时间
 	ChatGroups  []*ChatGroup `gorm:"many2many:group_members;"`
+	ClassId     uint
+	ClassStage  string `gorm:"size:20"`
+	UserType    uint
 }
 
 func (user *User) ToType() *model.User {
@@ -61,5 +65,7 @@ func (user *User) ToType() *model.User {
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
 		LastLogin:   user.LastLogin,
+		UserType:    consts.UserTypeToStringMap[user.UserType],
+		ClassStage:  user.ClassStage,
 	}
 }

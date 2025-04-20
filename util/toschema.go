@@ -1,6 +1,7 @@
 package util
 
 import (
+	"ar-app-api/consts"
 	"gorm.io/gorm"
 
 	"ar-app-api/dal/schema"
@@ -29,6 +30,8 @@ func ToUserSchema(u *model.User) *schema.User {
 		PostalCode:  u.PostalCode,
 		Status:      u.Status,
 		LastLogin:   u.LastLogin,
+		ClassStage:  u.ClassStage,
+		UserType:    consts.UserTypeToIntMap[u.UserType],
 	}
 }
 

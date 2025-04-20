@@ -20,7 +20,7 @@ var GraphDB neo4j.DriverWithContext
 
 func Init(ctx context.Context) {
 	InitConnection(ctx)
-	InitNeo4jDriver(ctx)
+	//InitNeo4jDriver(ctx)
 }
 func InitConnection(ctx context.Context) {
 	cfg := conf.GetConfig().DB
@@ -45,20 +45,20 @@ func InitConnection(ctx context.Context) {
 
 func RefreshMigrate(ctx context.Context) {
 	log.Info("init migrate")
-	err := DB.AutoMigrate(&schema.ImageHash{}, &schema.User{}, &schema.Message{}, &schema.Media{}, &schema.ChatGroup{})
+	err := DB.AutoMigrate(&schema.ImageHash{}, &schema.User{}, &schema.Message{}, &schema.Media{}, &schema.ChatGroup{}, &schema.Class{}, &schema.ClassTeacher{}, &schema.Assignment{})
 	if err != nil {
 		panic("数据库表更新失败")
 	}
 }
 
-func InitNeo4jDriver(ctx context.Context) {
-	neo4jConfig := conf.GetConfig().Neo4j
-	var err error
-	GraphDB, err = neo4j.NewDriverWithContext(
-		neo4jConfig.URI,
-		neo4j.BasicAuth(neo4jConfig.User, neo4jConfig.Pass, ""))
-	err = GraphDB.VerifyConnectivity(ctx)
-	if err != nil {
-		log.Error("neo4j connectivity error: %v", err)
-	}
-}
+//func InitNeo4jDriver(ctx context.Context) {
+//	neo4jConfig := conf.GetConfig().Neo4j
+//	var err error
+//	GraphDB, err = neo4j.NewDriverWithContext(
+//		neo4jConfig.URI,
+//		neo4j.BasicAuth(neo4jConfig.User, neo4jConfig.Pass, ""))
+//	err = GraphDB.VerifyConnectivity(ctx)
+//	if err != nil {
+//		log.Error("neo4j connectivity error: %v", err)
+//	}
+//}

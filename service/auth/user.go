@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"ar-app-api/consts"
 	"context"
 	"errors"
 	"time"
@@ -44,6 +45,6 @@ func UpdateLoginStatus(ctx context.Context, id uint) {
 		return
 	}
 	user.LastLogin = time.Now()
-	user.Status = util.OnLine
+	user.Status = consts.OnLine
 	data.UpdateUser(ctx, user)
 }

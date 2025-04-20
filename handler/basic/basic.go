@@ -15,7 +15,7 @@ type Resp struct {
 }
 
 func Success(c *gin.Context, data any) {
-	c.JSON(http.StatusOK, Resp{Code: 0, Data: data})
+	c.JSON(http.StatusOK, Resp{Code: 200, Data: data})
 }
 
 func SuccessWithFailureMessage(c *gin.Context, msg string, code int) {

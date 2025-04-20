@@ -1,8 +1,8 @@
 package util
 
 import (
-	"context"
 	"errors"
+	"github.com/gin-gonic/gin"
 )
 
 type contextKey string
@@ -15,20 +15,24 @@ type UserInfo struct {
 
 const userContextKey contextKey = "user-key"
 
-// GetUserFromContext 从上下文获取用户信息
-func GetUserFromContext(ctx context.Context) (*UserInfo, error) {
-	user, ok := ctx.Value(userContextKey).(*UserInfo)
-	if !ok {
-		return nil, errors.New("no user found in context")
-	}
-	return user, nil
-}
-
-// SetUserInContext 将用户信息存入上下文
-func SetUserInContext(ctx context.Context, id uint, userName, email string) context.Context {
-	return context.WithValue(ctx, userContextKey, &UserInfo{
+// SetUserToGinContext 存入 gin.Context（推荐在中间件中使用）
+func SetUserToGinContext(c *gin.Context, id uint, userName, email string) {
+	c.Set(string(userContextKey), &UserInfo{
 		ID:       id,
 		UserName: userName,
 		Email:    email,
 	})
+}
+
+// GetUserFromGinContext 从 gin.Context 获取
+func GetUserFromGinContext(c *gin.Context) (*UserInfo, error) {
+	val, exists := c.Get(string(userContextKey))
+	if !exists {
+		return nil, errors.New("user not found in gin context")
+	}
+	user, ok := val.(*UserInfo)
+	if !ok {
+		return nil, errors.New("user data format invalid")
+	}
+	return user, nil
 }

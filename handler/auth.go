@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"ar-app-api/consts"
 	"github.com/gin-gonic/gin"
 
 	"ar-app-api/handler/aerrors"
@@ -54,7 +55,7 @@ func Login(c *gin.Context) {
 // @Router /account/auth/register [POST]
 func Register(c *gin.Context) {
 	req := &RegisterReq{}
-	if err := c.BindJSON(req); err != nil {
+	if err := c.ShouldBind(req); err != nil {
 		basic.RequestParamsFailure(c)
 		return
 	}
@@ -72,6 +73,13 @@ func Register(c *gin.Context) {
 		basic.RequestFailureWithCode(c, "用户名已存在", aerrors.ParamsError)
 		return
 	}
+
+	if req.UserType == consts.UserTypeStudent {
+		// todo 校验学生端参数
+	} else if req.UserType == consts.UserTypeTeacher {
+		// todo 校验教师端参数
+	}
+
 	// jiami1
 	hashPassword, err := util.HashPassword(req.Password)
 	if err != nil {
@@ -83,6 +91,12 @@ func Register(c *gin.Context) {
 		Password:    hashPassword,
 		PhoneNumber: req.Phone,
 		Email:       req.Email,
+		UserType:    req.UserType,
+		ClassStage:  req.ClassStage,
+		// ClassNum:    req.ClassNum,
+		Gender:   req.Gender,
+		Name:     req.Name,
+		Nickname: req.NickName,
 	})
 	if err != nil {
 		basic.RequestFailure(c, err.Error())
@@ -107,7 +121,7 @@ func Register(c *gin.Context) {
 // @Success 200 {object} basic.Resp{data=CurrentUserResp}
 // @Router /account/auth/current [GET]
 func CurrentUser(c *gin.Context) {
-	userInfo, err := util.GetUserFromContext(c)
+	userInfo, err := util.GetUserFromGinContext(c)
 	if err != nil {
 		basic.RequestFailure(c, err.Error())
 		return
@@ -120,4 +134,31 @@ func CurrentUser(c *gin.Context) {
 	basic.Success(c, &CurrentUserResp{
 		User: u,
 	})
+}
+
+// CheckToken 检查 Token 是否有效
+// @Summary 检查Token
+// @Tag Account.Auth(Token检查)
+// @Param Authorization header string true "API TOKEN"
+// @Success 200 {object} basic.Resp{data=string}
+// @Failure 401 {object} basic.Resp
+// @Router /account/auth/check [GET]
+func CheckToken(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		basic.RequestFailureWithCode(c, "未提供Token", aerrors.NoAuth)
+		return
+	}
+
+	_, err := util.GetUserFromGinContext(c)
+
+	if err != nil {
+		c.Writer.Header().Set("Authorization", "")
+		basic.RequestFailureWithCode(c, "token不正确或已过期", aerrors.NoAuth)
+		return
+	}
+
+	// 成功，返回 token（或你也可以返回 tokenInfo）
+	c.Writer.Header().Set("Authorization", token)
+	basic.Success(c, token)
 }

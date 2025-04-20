@@ -64,7 +64,7 @@ func PingWS(context *gin.Context) {
 
 // api:/getPushNews接口处理函数
 func GetPushNews(context *gin.Context) {
-	userInfo, err := util.GetUserFromContext(context)
+	userInfo, err := util.GetUserFromGinContext(context)
 	if err != nil {
 		basic.AuthFailure(context)
 		return
@@ -78,7 +78,7 @@ func GetPushNews(context *gin.Context) {
 // api:/deleteClient接口处理函数
 func DeleteClient(context *gin.Context) {
 	// 关闭websocket链接
-	userInfo, err := util.GetUserFromContext(context)
+	userInfo, err := util.GetUserFromGinContext(context)
 	if err != nil {
 		basic.AuthFailure(context)
 		return

@@ -68,6 +68,7 @@ func setupRouter() *gin.Engine {
 			account.GET("/auth/current", middleware.AuthMiddleware(), handler.CurrentUser)
 			account.POST("/auth/login", handler.Login)
 			account.POST("/auth/register", handler.Register)
+			account.GET("/auth/check", middleware.AuthMiddleware(), handler.CheckToken)
 		}
 	}
 	api := r.Group("/api/v1", middleware.AuthMiddleware())
@@ -84,5 +85,5 @@ func setupRouter() *gin.Engine {
 func main() {
 	r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	r.Run(":8998")
 }

@@ -7,11 +7,11 @@ import (
 var cfg Config
 
 type Config struct {
-	Jwt   JwtConfig `json:"jwt"`
-	DB    DBConfig  `json:"db"`
-	W     WechatConfig
-	Git   GitHubConfig
-	Neo4j Neo4jConfig
+	Jwt JwtConfig `json:"jwt"`
+	DB  DBConfig  `json:"db"`
+	W   WechatConfig
+	Git GitHubConfig
+	//Neo4j Neo4jConfig
 }
 
 type LarkConfig struct {
@@ -58,18 +58,18 @@ type WechatConfig struct {
 func Init(ctx context.Context) {
 	cfg = Config{
 		Jwt: JwtConfig{Secret: "*#3507", Expire: 24, RefreshSecret: "refresh_*#3507", RefreshExpire: 720, AesKey: "QWERTYUIOPASDFGH"},
-		DB:  DBConfig{IP: "1.117.229.251", Port: 3306, User: "ar-app", Pass: "TZKSzrpj4G4TzXM2", DbName: "ar-app"},
-		Git: GitHubConfig{
-			UserName: "RicardoSimple",
-			Repo:     "pic-store",
-			Token:    "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",
-			Message:  "add image",
-		},
-		Neo4j: Neo4jConfig{
-			URI:  "neo4j://1.117.229.251:7687",
-			User: "neo4j",
-			Pass: "everest-nikita-cabinet-welcome-galaxy-4397",
-		},
+		DB:  DBConfig{IP: "111.229.121.171", Port: 3306, User: "learningAssist", Pass: "zAEkGG6L8z3EpawG", DbName: "learningassist"},
+		//Git: GitHubConfig{
+		//	UserName: "RicardoSimple",
+		//	Repo:     "pic-store",
+		//	Token:    "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",
+		//	Message:  "add image",
+		//},
+		//Neo4j: Neo4jConfig{
+		//	URI:  "neo4j://1.117.229.251:7687",
+		//	User: "neo4j",
+		//	Pass: "everest-nikita-cabinet-welcome-galaxy-4397",
+		//},
 	}
 }
 
