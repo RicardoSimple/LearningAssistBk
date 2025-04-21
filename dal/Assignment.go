@@ -1,4 +1,4 @@
-package data
+package dal
 
 import (
 	"ar-app-api/dal/schema"

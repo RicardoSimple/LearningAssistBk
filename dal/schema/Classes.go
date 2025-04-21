@@ -6,7 +6,8 @@ import "time"
 type Class struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"size:100;not null" json:"name"`
-	SubjectID *uint     `json:"subject_id"` // 外键：科目（可选）
+	Grade     string    `gorm:"size:100;not null" json:"grade"`
+	ClassNum  string    `gorm:"size:50;not null" json:"class_num"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

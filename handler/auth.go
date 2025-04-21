@@ -2,12 +2,12 @@ package handler
 
 import (
 	"ar-app-api/consts"
+	"ar-app-api/service"
 	"github.com/gin-gonic/gin"
 
 	"ar-app-api/handler/aerrors"
 	"ar-app-api/handler/basic"
 	"ar-app-api/model"
-	"ar-app-api/service/auth"
 	"ar-app-api/util"
 )
 
@@ -24,7 +24,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 1. 查询用户
-	u, _ := auth.GetUserByUserName(c, req.Username)
+	u, _ := service.GetUserByUserName(c, req.Username)
 	if u == nil {
 		basic.RequestFailureWithCode(c, "用户名错误", aerrors.RecordNotFind)
 		return
@@ -68,7 +68,10 @@ func Register(c *gin.Context) {
 		basic.RequestFailureWithCode(c, "手机号格式错误", aerrors.ParamsError)
 		return
 	}
-	name, _ := auth.GetUserByUserName(c, req.Username)
+	if !util.IsValidGrade(req.ClassStage) {
+		basic.RequestFailureWithCode(c, "年级错误", aerrors.ParamsError)
+	}
+	name, _ := service.GetUserByUserName(c, req.Username)
 	if name != nil {
 		basic.RequestFailureWithCode(c, "用户名已存在", aerrors.ParamsError)
 		return
@@ -86,7 +89,7 @@ func Register(c *gin.Context) {
 		basic.RequestFailure(c, err.Error())
 		return
 	}
-	user, err := auth.CreateUser(c, &model.User{
+	user, err := service.CreateUser(c, &model.User{
 		Username:    req.Username,
 		Password:    hashPassword,
 		PhoneNumber: req.Phone,
@@ -126,7 +129,7 @@ func CurrentUser(c *gin.Context) {
 		basic.RequestFailure(c, err.Error())
 		return
 	}
-	u, err := auth.GetUserByUserName(c, userInfo.UserName)
+	u, err := service.GetUserByUserName(c, userInfo.UserName)
 	if err != nil {
 		basic.RequestFailure(c, err.Error())
 		return

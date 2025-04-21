@@ -1,4 +1,4 @@
-package data
+package dal
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 
 	"gorm.io/gorm"
 
-	"ar-app-api/dal"
 	"ar-app-api/dal/schema"
 )
 
@@ -17,7 +16,7 @@ func CreateMedia(ctx context.Context, content, mediaType, url string) error {
 		Type:    mediaType,
 		Url:     url,
 	}
-	err := dal.DB.Create(&media).Error
+	err := DB.Create(&media).Error
 	if err != nil {
 		log.Println("Error creating Media:", err)
 	}
@@ -27,7 +26,7 @@ func CreateMedia(ctx context.Context, content, mediaType, url string) error {
 // ReadMediaByID 根据 ID 查询 Media 记录
 func ReadMediaByID(ctx context.Context, id uint) (*schema.Media, error) {
 	var media schema.Media
-	err := dal.DB.First(&media, id).Error
+	err := DB.First(&media, id).Error
 	if err != nil {
 		log.Println("Error reading Media by ID:", err)
 	}
@@ -42,7 +41,7 @@ func UpdateMedia(ctx context.Context, id uint, content, mediaType, url string) e
 		Type:    mediaType,
 		Url:     url,
 	}
-	err := dal.DB.Save(&media).Error
+	err := DB.Save(&media).Error
 	if err != nil {
 		log.Println("Error updating Media:", err)
 	}
@@ -51,7 +50,7 @@ func UpdateMedia(ctx context.Context, id uint, content, mediaType, url string) e
 
 // DeleteMediaByID 根据 ID 删除 Media 记录
 func DeleteMediaByID(ctx context.Context, id uint) error {
-	err := dal.DB.Delete(&schema.Media{}, id).Error
+	err := DB.Delete(&schema.Media{}, id).Error
 	if err != nil {
 		log.Println("Error deleting Media by ID:", err)
 	}

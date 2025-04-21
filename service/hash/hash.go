@@ -1,13 +1,13 @@
 package hash
 
 import (
+	"ar-app-api/dal"
 	"context"
 	"errors"
 	"io"
 	"mime/multipart"
 	"strconv"
 
-	"ar-app-api/dal/data"
 	"ar-app-api/dal/hashKey"
 	"ar-app-api/util"
 	"ar-app-api/util/decode"
@@ -40,7 +40,7 @@ func BindImageHash(ctx context.Context, header *multipart.FileHeader, repo strin
 	log.Info(uploadFile)
 
 	// Store hashImage
-	id, err := data.CreateImageHash(ctx, uploadFile, hash.ToString(), "", 3)
+	id, err := dal.CreateImageHash(ctx, uploadFile, hash.ToString(), "", 3)
 	if err != nil {
 		return err
 	}

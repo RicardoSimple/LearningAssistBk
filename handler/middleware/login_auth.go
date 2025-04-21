@@ -2,13 +2,13 @@ package middleware
 
 import (
 	"ar-app-api/consts"
+	"ar-app-api/service"
 	"context"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
 	"ar-app-api/handler/basic"
-	"ar-app-api/service/auth"
 	"ar-app-api/util"
 )
 
@@ -39,7 +39,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email)
 		// 更新用户登录时间+状态
-		go auth.UpdateLoginStatus(context.Background(), claims.ID)
+		go service.UpdateLoginStatus(context.Background(), claims.ID)
 		c.Next()
 	}
 }

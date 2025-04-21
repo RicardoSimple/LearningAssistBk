@@ -10,6 +10,8 @@ const (
 	UserTypeTeacher = "teacher"
 	UserTypeStudent = "student"
 	UserTypeAdmin   = "admin"
+
+	ClassNumLength = 6
 )
 
 var (
@@ -22,5 +24,32 @@ var (
 		0: UserTypeAdmin,
 		1: UserTypeTeacher,
 		2: UserTypeStudent,
+	}
+	GradeGroups = map[string][]string{
+		"小学":  {"一年级", "二年级", "三年级", "四年级", "五年级", "六年级"},
+		"初中":  {"初一", "初二", "初三"},
+		"高中":  {"高一", "高二", "高三"},
+		"大学":  {"大一", "大二", "大三", "大四"},
+		"研究生": {"研究生"},
+	}
+
+	GradeOptions = []string{
+		"一年级",
+		"二年级",
+		"三年级",
+		"四年级",
+		"五年级",
+		"六年级",
+		"初一",
+		"初二",
+		"初三",
+		"高一",
+		"高二",
+		"高三",
+		"大一",
+		"大二",
+		"大三",
+		"大四",
+		"研究生",
 	}
 )

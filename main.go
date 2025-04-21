@@ -70,6 +70,10 @@ func setupRouter() *gin.Engine {
 			account.POST("/auth/register", handler.Register)
 			account.GET("/auth/check", middleware.AuthMiddleware(), handler.CheckToken)
 		}
+		course := apiNoAuth.Group("/course")
+		{
+			course.GET("/courses", handler.GetCoursesHandler)
+		}
 	}
 	api := r.Group("/api/v1", middleware.AuthMiddleware())
 	{
@@ -77,6 +81,15 @@ func setupRouter() *gin.Engine {
 		{
 			imageHash.POST("/hash/bind", hash.BindImageHash)
 			imageHash.GET("/hash/similar", hash.SimilarImage)
+		}
+		course := api.Group("/course")
+		{
+			course.POST("/create", handler.CreateCourseHandler)
+			course.POST("/subject/create", handler.CreateSubjectHandler)
+		}
+		class := api.Group("/class")
+		{
+			class.POST("/create", handler.CreateClassHandler)
 		}
 	}
 	return r

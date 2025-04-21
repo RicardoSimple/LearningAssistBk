@@ -1,20 +1,23 @@
-package auth
+package service
 
 import (
 	"ar-app-api/consts"
+	"ar-app-api/dal"
 	"context"
 	"errors"
 	"time"
 
 	"gorm.io/gorm"
 
-	"ar-app-api/dal/data"
 	"ar-app-api/model"
 	"ar-app-api/util"
 )
 
 func CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
-	suser, err := data.CreateUser(ctx, util.ToUserSchema(user))
+
+	// todo 自动加入班级
+
+	suser, err := dal.CreateUser(ctx, util.ToUserSchema(user))
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +32,7 @@ func GetUserByUserName(ctx context.Context, userName string) (*model.User, error
 	if userName == "" {
 		return nil, errors.New("userName is empty")
 	}
-	user, err := data.GetUserByUsername(ctx, userName)
+	user, err := dal.GetUserByUsername(ctx, userName)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user not found")
@@ -40,11 +43,11 @@ func GetUserByUserName(ctx context.Context, userName string) (*model.User, error
 }
 
 func UpdateLoginStatus(ctx context.Context, id uint) {
-	user, err := data.GetUserByID(ctx, id)
+	user, err := dal.GetUserByID(ctx, id)
 	if err != nil {
 		return
 	}
 	user.LastLogin = time.Now()
 	user.Status = consts.OnLine
-	data.UpdateUser(ctx, user)
+	dal.UpdateUser(ctx, user)
 }
