@@ -21,8 +21,6 @@ import (
 	"learning-assistant/ws"
 )
 
-var db = make(map[string]string)
-
 func init() {
 	ctx := context.Background()
 	// 加载logger
@@ -98,6 +96,7 @@ func setupRouter() *gin.Engine {
 		user := api.Group("/user")
 		{
 			user.GET("/list", handler.GetUserListHandler)
+			user.POST("/create", handler.CreateUserByAdmin)
 		}
 	}
 	return r

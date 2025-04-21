@@ -19,8 +19,6 @@ func ToUserSchema(u *model.User) *schema.User {
 		Password:    u.Password,
 		Email:       u.Email,
 		PhoneNumber: u.PhoneNumber,
-		FirstName:   u.FirstName,
-		LastName:    u.LastName,
 		Gender:      u.Gender,
 		DateOfBirth: u.DateOfBirth,
 		Address:     u.Address,
@@ -31,6 +29,7 @@ func ToUserSchema(u *model.User) *schema.User {
 		Status:      u.Status,
 		LastLogin:   u.LastLogin,
 		ClassStage:  u.ClassStage,
+		Name:        u.Name,
 		UserType:    consts.UserTypeToIntMap[u.UserType],
 	}
 }

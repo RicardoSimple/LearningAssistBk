@@ -15,8 +15,6 @@ type User struct {
 	Password    string       `gorm:"size:128;NOT NULL"`             // 密码，通常加密存储
 	Email       string       `gorm:"uniqueIndex;size:128;NOT NULL"` // 邮箱，唯一索引
 	PhoneNumber string       `gorm:"size:20;NOT NULL"`              // 手机号码
-	FirstName   string       `gorm:"size:64"`                       // 名
-	LastName    string       `gorm:"size:64"`                       // 姓
 	Gender      string       `gorm:"size:10"`                       // 性别
 	DateOfBirth time.Time    // 出生日期
 	Address     string       `gorm:"size:256"` // 地址
@@ -30,6 +28,7 @@ type User struct {
 	ClassId     uint
 	ClassStage  string `gorm:"size:20"`
 	UserType    uint
+	Name        string `gorm:"size:64"`
 }
 
 func (user *User) ToType() *model.User {
@@ -51,8 +50,6 @@ func (user *User) ToType() *model.User {
 		Password:    user.Password,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
 		Gender:      user.Gender,
 		DateOfBirth: user.DateOfBirth,
 		Address:     user.Address,
@@ -67,5 +64,6 @@ func (user *User) ToType() *model.User {
 		LastLogin:   user.LastLogin,
 		UserType:    consts.UserTypeToStringMap[user.UserType],
 		ClassStage:  user.ClassStage,
+		Name:        user.Name,
 	}
 }

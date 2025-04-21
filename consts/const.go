@@ -12,6 +12,8 @@ const (
 	UserTypeAdmin   = "admin"
 
 	ClassNumLength = 6
+
+	DefaultPassword = "123456"
 )
 
 var (

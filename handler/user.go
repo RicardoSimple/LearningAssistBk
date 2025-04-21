@@ -2,7 +2,10 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"learning-assistant/consts"
+	"learning-assistant/handler/aerrors"
 	"learning-assistant/handler/basic"
+	"learning-assistant/model"
 	"learning-assistant/service"
 	"learning-assistant/util"
 )
@@ -18,6 +21,15 @@ type UserResp struct {
 	UserType    string `json:"userType,omitempty"`
 	ClassStage  string `json:"class_stage,omitempty"`
 	Name        string `json:"name,omitempty"`
+}
+
+type CreateUserResp struct {
+	Username string `json:"username" binding:"required"`
+	Phone    string `json:"phone"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	ClassNum string `json:"class_num"`
+	UserType string `json:"user_type" binding:"required"`
 }
 
 // GetUserListHandler 分页获取用户列表
@@ -56,4 +68,39 @@ func GetUserListHandler(c *gin.Context) {
 		"page":     page,
 		"pageSize": pageSize,
 	})
+}
+
+// CreateUserByAdmin 创建用户接口
+// @Summary 用户注册
+// @Tag Account.Auth(注册)
+// @Param req body CreateUserResp
+// @Success 200 {object} basic.Resp
+// @Router /user/create [POST]
+func CreateUserByAdmin(c *gin.Context) {
+	//  参数校验
+	req := &CreateUserResp{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		basic.RequestParamsFailure(c)
+		return
+	}
+
+	name, _ := service.GetUserByUserName(c, req.Username)
+	if name != nil {
+		basic.RequestFailureWithCode(c, "用户名已存在", aerrors.ParamsError)
+		return
+	}
+
+	user, err := service.CreateUser(c, &model.User{
+		Username:    req.Username,
+		Password:    consts.DefaultPassword,
+		Email:       req.Email,
+		PhoneNumber: req.Phone,
+		UserType:    req.UserType,
+		Name:        req.Name,
+	})
+	if err != nil {
+		basic.RequestFailure(c, "service error create user")
+		return
+	}
+	basic.Success(c, user)
 }
