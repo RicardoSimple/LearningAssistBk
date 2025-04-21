@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"ar-app-api/model"
+	"learning-assistant/model"
 )
 
 type Message struct {

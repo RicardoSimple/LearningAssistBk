@@ -8,9 +8,9 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"ar-app-api/conf"
-	"ar-app-api/dal/schema"
-	"ar-app-api/util/log"
+	"learning-assistant/conf"
+	"learning-assistant/dal/schema"
+	"learning-assistant/util/log"
 )
 
 const GraphDataBaseName = "neo4j"

@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"ar-app-api/consts"
-	"ar-app-api/service"
 	"github.com/gin-gonic/gin"
+	"learning-assistant/consts"
+	"learning-assistant/service"
 
-	"ar-app-api/handler/aerrors"
-	"ar-app-api/handler/basic"
-	"ar-app-api/model"
-	"ar-app-api/util"
+	"learning-assistant/handler/aerrors"
+	"learning-assistant/handler/basic"
+	"learning-assistant/model"
+	"learning-assistant/util"
 )
 
 // Login 登录接口

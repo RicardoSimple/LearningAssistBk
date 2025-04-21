@@ -1,8 +1,8 @@
 package dal
 
 import (
-	"ar-app-api/dal/schema"
 	"context"
+	"learning-assistant/dal/schema"
 )
 
 // 创建科目

@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"ar-app-api/model"
-	msgService "ar-app-api/service/msg"
-	"ar-app-api/util/log"
+	"learning-assistant/model"
+	msgService "learning-assistant/service/msg"
+	"learning-assistant/util/log"
 )
 
 const (

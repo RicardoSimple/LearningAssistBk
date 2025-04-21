@@ -10,7 +10,7 @@ import (
 	"github.com/dgraph-io/badger/v4"
 	"github.com/robfig/cron/v3"
 
-	"ar-app-api/util/log"
+	"learning-assistant/util/log"
 )
 
 const (

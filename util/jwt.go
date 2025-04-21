@@ -7,9 +7,9 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"ar-app-api/conf"
-	"ar-app-api/model"
-	"ar-app-api/util/log"
+	"learning-assistant/conf"
+	"learning-assistant/model"
+	"learning-assistant/util/log"
 )
 
 type JwtC struct {

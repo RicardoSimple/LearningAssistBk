@@ -1,7 +1,7 @@
 package util
 
 import (
-	"ar-app-api/consts"
+	"learning-assistant/consts"
 	"math/rand"
 	"time"
 )

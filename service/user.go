@@ -1,16 +1,16 @@
 package service
 
 import (
-	"ar-app-api/consts"
-	"ar-app-api/dal"
 	"context"
 	"errors"
+	"learning-assistant/consts"
+	"learning-assistant/dal"
 	"time"
 
 	"gorm.io/gorm"
 
-	"ar-app-api/model"
-	"ar-app-api/util"
+	"learning-assistant/model"
+	"learning-assistant/util"
 )
 
 func CreateUser(ctx context.Context, user *model.User) (*model.User, error) {

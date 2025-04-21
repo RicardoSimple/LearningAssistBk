@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"ar-app-api/model"
+	"learning-assistant/model"
 	"mime/multipart"
 )
 

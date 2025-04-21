@@ -9,16 +9,16 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"ar-app-api/client"
-	"ar-app-api/conf"
-	"ar-app-api/dal"
-	"ar-app-api/handler"
-	"ar-app-api/handler/hash"
-	"ar-app-api/handler/middleware"
-	"ar-app-api/service/cron"
-	"ar-app-api/util"
-	"ar-app-api/util/log"
-	"ar-app-api/ws"
+	"learning-assistant/client"
+	"learning-assistant/conf"
+	"learning-assistant/dal"
+	"learning-assistant/handler"
+	"learning-assistant/handler/hash"
+	"learning-assistant/handler/middleware"
+	"learning-assistant/service/cron"
+	"learning-assistant/util"
+	"learning-assistant/util/log"
+	"learning-assistant/ws"
 )
 
 var db = make(map[string]string)

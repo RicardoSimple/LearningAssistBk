@@ -1,11 +1,11 @@
 package service
 
 import (
-	"ar-app-api/consts"
-	"ar-app-api/dal"
-	"ar-app-api/dal/schema"
-	"ar-app-api/util"
 	"context"
+	"learning-assistant/consts"
+	"learning-assistant/dal"
+	"learning-assistant/dal/schema"
+	"learning-assistant/util"
 )
 
 func CreateClass(ctx context.Context, name string, grade string) (*schema.Class, error) {

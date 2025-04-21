@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"ar-app-api/conf"
-	"ar-app-api/util/log"
+	"learning-assistant/conf"
+	"learning-assistant/util/log"
 )
 
 const (

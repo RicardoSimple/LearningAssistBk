@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	"ar-app-api/consts"
-	"ar-app-api/service"
 	"context"
+	"learning-assistant/consts"
+	"learning-assistant/service"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
-	"ar-app-api/handler/basic"
-	"ar-app-api/util"
+	"learning-assistant/handler/basic"
+	"learning-assistant/util"
 )
 
 // AuthMiddleware 登录鉴权中间件

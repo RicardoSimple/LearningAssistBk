@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"ar-app-api/util/log"
+	"learning-assistant/util/log"
 
 	"github.com/gorilla/websocket"
 )

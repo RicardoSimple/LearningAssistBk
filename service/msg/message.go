@@ -1,11 +1,11 @@
 package msg
 
 import (
-	"ar-app-api/dal"
 	"context"
+	"learning-assistant/dal"
 
-	"ar-app-api/model"
-	"ar-app-api/util"
+	"learning-assistant/model"
+	"learning-assistant/util"
 )
 
 func SaveMessage(ctx context.Context, msg *model.Message) (*model.Message, error) {

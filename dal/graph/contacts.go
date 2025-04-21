@@ -7,9 +7,9 @@ import (
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 
-	"ar-app-api/dal"
-	"ar-app-api/model"
-	"ar-app-api/util/log"
+	"learning-assistant/dal"
+	"learning-assistant/model"
+	"learning-assistant/util/log"
 )
 
 func CreateContact(ctx context.Context, user *model.User) ([]*model.User, error) {

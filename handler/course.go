@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"ar-app-api/handler/basic"
-	"ar-app-api/model"
-	"ar-app-api/service"
 	"github.com/gin-gonic/gin"
+	"learning-assistant/handler/basic"
+	"learning-assistant/model"
+	"learning-assistant/service"
 	"time"
 )
 

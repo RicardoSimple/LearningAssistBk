@@ -1,11 +1,11 @@
 package util
 
 import (
-	"ar-app-api/consts"
 	"gorm.io/gorm"
+	"learning-assistant/consts"
 
-	"ar-app-api/dal/schema"
-	"ar-app-api/model"
+	"learning-assistant/dal/schema"
+	"learning-assistant/model"
 )
 
 func ToUserSchema(u *model.User) *schema.User {

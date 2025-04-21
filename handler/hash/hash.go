@@ -3,9 +3,9 @@ package hash
 import (
 	"github.com/gin-gonic/gin"
 
-	"ar-app-api/handler/aerrors"
-	"ar-app-api/handler/basic"
-	"ar-app-api/service/hash"
+	"learning-assistant/handler/aerrors"
+	"learning-assistant/handler/basic"
+	"learning-assistant/service/hash"
 )
 
 // BindImageHash

@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"ar-app-api/dal/schema"
+	"learning-assistant/dal/schema"
 )
 
 // CreateImageHash 创建一个新的 schema.ImageHash 记录

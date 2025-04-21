@@ -12,7 +12,7 @@ import (
 
 	"github.com/corona10/goimagehash"
 
-	"ar-app-api/dal/hashKey"
+	"learning-assistant/dal/hashKey"
 )
 
 func MFileToImage(header *multipart.FileHeader) (image image.Image, err error) {

@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"ar-app-api/dal/schema"
+	"learning-assistant/dal/schema"
 )
 
 // CreateUser 新增用户

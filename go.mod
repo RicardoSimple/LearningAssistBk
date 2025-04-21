@@ -1,4 +1,4 @@
-module ar-app-api
+module learning-assistant
 
 go 1.22
 

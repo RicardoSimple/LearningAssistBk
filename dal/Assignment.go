@@ -1,8 +1,8 @@
 package dal
 
 import (
-	"ar-app-api/dal/schema"
 	"gorm.io/gorm"
+	"learning-assistant/dal/schema"
 	"time"
 )
 

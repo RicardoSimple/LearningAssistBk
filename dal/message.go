@@ -3,7 +3,7 @@ package dal
 import (
 	"context"
 
-	"ar-app-api/dal/schema"
+	"learning-assistant/dal/schema"
 )
 
 func CreateMessage(ctx context.Context, msg *schema.Message) (*schema.Message, error) {

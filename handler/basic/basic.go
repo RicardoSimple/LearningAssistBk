@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"ar-app-api/handler/aerrors"
+	"learning-assistant/handler/aerrors"
 )
 
 type Resp struct {

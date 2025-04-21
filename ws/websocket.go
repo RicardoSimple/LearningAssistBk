@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"time"
 
-	"ar-app-api/util/log"
+	"learning-assistant/util/log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
-	"ar-app-api/handler/aerrors"
-	"ar-app-api/handler/basic"
-	"ar-app-api/util"
+	"learning-assistant/handler/aerrors"
+	"learning-assistant/handler/basic"
+	"learning-assistant/util"
 )
 
 var upgrader = websocket.Upgrader{

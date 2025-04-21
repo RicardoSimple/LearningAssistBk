@@ -1,12 +1,12 @@
 package schema
 
 import (
-	"ar-app-api/consts"
+	"learning-assistant/consts"
 	"time"
 
 	"gorm.io/gorm"
 
-	"ar-app-api/model"
+	"learning-assistant/model"
 )
 
 type User struct {

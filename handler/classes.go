@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"ar-app-api/handler/basic"
-	"ar-app-api/service"
-	"ar-app-api/util"
 	"github.com/gin-gonic/gin"
+	"learning-assistant/handler/basic"
+	"learning-assistant/service"
+	"learning-assistant/util"
 )
 
 // CreateClassHandler 新建班级

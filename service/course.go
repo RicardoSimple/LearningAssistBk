@@ -1,11 +1,11 @@
 package service
 
 import (
-	"ar-app-api/dal"
-	"ar-app-api/dal/schema"
-	"ar-app-api/model"
 	"context"
 	"fmt"
+	"learning-assistant/dal"
+	"learning-assistant/dal/schema"
+	"learning-assistant/model"
 )
 
 func GetAllCourses(ctx context.Context) ([]*model.Course, error) {

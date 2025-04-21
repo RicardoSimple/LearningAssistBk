@@ -1,17 +1,17 @@
 package hash
 
 import (
-	"ar-app-api/dal"
 	"context"
 	"errors"
 	"io"
+	"learning-assistant/dal"
 	"mime/multipart"
 	"strconv"
 
-	"ar-app-api/dal/hashKey"
-	"ar-app-api/util"
-	"ar-app-api/util/decode"
-	"ar-app-api/util/log"
+	"learning-assistant/dal/hashKey"
+	"learning-assistant/util"
+	"learning-assistant/util/decode"
+	"learning-assistant/util/log"
 )
 
 func BindImageHash(ctx context.Context, header *multipart.FileHeader, repo string) error {

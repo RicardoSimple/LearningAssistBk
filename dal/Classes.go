@@ -1,8 +1,8 @@
 package dal
 
 import (
-	"ar-app-api/dal/schema"
 	"context"
+	"learning-assistant/dal/schema"
 )
 
 func CreateClass(ctx context.Context, name string, grade string, classNum string) (*schema.Class, error) {
