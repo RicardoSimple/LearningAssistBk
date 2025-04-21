@@ -8,10 +8,10 @@ import (
 	"learning-assistant/model"
 )
 
-func GetAllCourses(ctx context.Context) ([]*model.Course, error) {
-	coursesData, err := dal.GetAllCoursesWithSubjects(ctx)
+func GetCourses(ctx context.Context, page, pageSize int) ([]*model.Course, int, error) {
+	coursesData, i, err := dal.GetCoursesPage(ctx, page, pageSize)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	courses := make([]*model.Course, len(coursesData))
 	for i, s := range coursesData {
@@ -26,7 +26,15 @@ func GetAllCourses(ctx context.Context) ([]*model.Course, error) {
 		}
 	}
 
-	return courses, nil
+	return courses, i, nil
+}
+
+func GetSubjects(ctx context.Context) (map[int]string, error) {
+	subjects, err := dal.GetAllSubjects(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return makeSubjects2Map(subjects), nil
 }
 
 func CreateCourse(ctx context.Context, course *model.Course, subIds []uint, duration uint) error {
@@ -50,5 +58,5 @@ func makeSubjects2Map(subjects []schema.Subject) map[int]string {
 	return m
 }
 func duration2Str(totalTimeMinutes uint) string {
-	return fmt.Sprintf("%02d:%02d", totalTimeMinutes/60, totalTimeMinutes%60)
+	return fmt.Sprintf("%02d小时%02d分钟", totalTimeMinutes/60, totalTimeMinutes%60)
 }

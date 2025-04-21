@@ -32,3 +32,26 @@ func CreateClassHandler(c *gin.Context) {
 	}
 	basic.Success(c, clazz)
 }
+
+// GetClassListHandler 分页获取班级列表
+// @Summary 获取班级列表（分页）
+// @Tags Class
+// @Param page query int true "页码"
+// @Param page_size query int true "每页数量"
+// @Success 200 {object} basic.Resp{data=ClassPageResp}
+// @Router /api/v1/class/list [get]
+func GetClassListHandler(c *gin.Context) {
+	page, pageSize := util.GetPageParams(c)
+
+	classes, total, err := service.GetClassListPage(c, page, pageSize)
+	if err != nil {
+		basic.RequestFailure(c, "获取班级列表失败："+err.Error())
+		return
+	}
+	basic.Success(c, gin.H{
+		"list":     classes,
+		"total":    total,
+		"page":     page,
+		"pageSize": pageSize,
+	})
+}

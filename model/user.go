@@ -26,9 +26,7 @@ type User struct {
 	LastLogin   time.Time    `json:"lastLogin"`
 	UserType    string       `json:"userType,omitempty"`
 	ClassStage  string       `json:"class_stage,omitempty"`
-	ClassNum    string       `json:"class_num,omitempty"`
 	Name        string       `json:"name,omitempty"`
-	Nickname    string       `json:"nickname,omitempty"`
 }
 
 // TinyGroup 基础群聊信息

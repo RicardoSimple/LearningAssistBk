@@ -27,6 +27,7 @@ type CustomClaims struct {
 	UserName string `json:"username"`
 	Email    string `json:"email"`
 	Gender   string `json:"gender"`
+	UserType string `json:"user_type"`
 	jwt.StandardClaims
 }
 type RefreshTokenClaims struct {
@@ -56,6 +57,7 @@ func GenerateTokens(user *model.User) (*model.TokenInfo, error) {
 		UserName: user.Username,
 		Email:    user.Email,
 		Gender:   user.Gender,
+		UserType: user.UserType,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: accessTokenExpiration.Unix(),
 		},
@@ -95,6 +97,7 @@ func GenerateTokens(user *model.User) (*model.TokenInfo, error) {
 		RefreshToken: encryptedRefreshToken,
 		ID:           user.ID,
 		UserName:     user.Username,
+		UserType:     user.UserType,
 	}, nil
 }
 

@@ -51,3 +51,14 @@ func UpdateLoginStatus(ctx context.Context, id uint) {
 	user.Status = consts.OnLine
 	dal.UpdateUser(ctx, user)
 }
+func GetUserListPage(ctx context.Context, page, pageSize int) ([]model.User, int64, error) {
+	usersPage, i, err := dal.GetUsersPage(ctx, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	res := make([]model.User, 0, len(usersPage))
+	for _, user := range usersPage {
+		res = append(res, *user.ToType())
+	}
+	return res, i, nil
+}

@@ -57,3 +57,25 @@ func GetUserByUsername(ctx context.Context, username string) (*schema.User, erro
 func DeleteUser(ctx context.Context, id uint) error {
 	return DB.WithContext(ctx).Delete(&schema.User{}, id).Error
 }
+
+func GetUsersPage(ctx context.Context, page, pageSize int) ([]schema.User, int64, error) {
+	var (
+		users []schema.User
+		total int64
+	)
+
+	if err := DB.Model(&schema.User{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * pageSize
+	err := DB.
+		Order("created_at desc").
+		Limit(pageSize).
+		Offset(offset).
+		Find(&users).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return users, total, nil
+}

@@ -1,8 +1,10 @@
 package util
 
 import (
+	"github.com/gin-gonic/gin"
 	"learning-assistant/consts"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -25,4 +27,19 @@ func IsValidGrade(grade string) bool {
 		}
 	}
 	return false
+}
+func GetPageParams(c *gin.Context) (page int, pageSize int) {
+	pageStr := c.DefaultQuery("page", "1")
+	pageSizeStr := c.DefaultQuery("pageSize", "10")
+
+	page, _ = strconv.Atoi(pageStr)
+	pageSize, _ = strconv.Atoi(pageSizeStr)
+
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 10
+	}
+	return
 }

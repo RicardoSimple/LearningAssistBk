@@ -82,3 +82,31 @@ func GetAllCoursesWithSubjects(ctx context.Context) ([]schema.Course, error) {
 	err := DB.Preload("Subjects").Find(&courses).Error
 	return courses, err
 }
+func GetCoursesPage(ctx context.Context, page, pageSize int) ([]schema.Course, int, error) {
+	if page < 0 || pageSize < 0 {
+		subjects, err := GetAllCoursesWithSubjects(ctx)
+		return subjects, len(subjects), err
+	}
+	var (
+		courses []schema.Course
+		total   int64
+	)
+
+	// 查询总数
+	if err := DB.Model(&schema.Course{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 查询分页数据并预加载 Subjects
+	offset := (page - 1) * pageSize
+	err := DB.Preload("Subjects").
+		Order("created_at desc").
+		Limit(pageSize).
+		Offset(offset).
+		Find(&courses).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return courses, int(total), nil
+}

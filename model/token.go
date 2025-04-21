@@ -5,4 +5,5 @@ type TokenInfo struct {
 	RefreshToken string `json:"refresh_token"`
 	ID           uint   `json:"id"`
 	UserName     string `json:"user_name"`
+	UserType     string `json:"user_type"`
 }

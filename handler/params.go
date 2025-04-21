@@ -47,6 +47,13 @@ type CourseResp struct {
 	Date        string        `json:"date"`
 }
 
+type CoursePageResp struct {
+	Courses  []CourseResp `json:"courses"`
+	Total    int          `json:"total"`
+	PageSize int          `json:"page_size"`
+	PageNum  int          `json:"page_num"`
+}
+
 type CreateSubjectReq struct {
 	Name string `json:"name" binding:"required"`
 }
@@ -55,9 +62,8 @@ type CreateCourseReq struct {
 	Name        string `json:"name" binding:"required"`
 	Cover       string `json:"cover"`
 	Description string `json:"description"`
-	Duration    uint   `json:"duration"`
+	Duration    string `json:"duration"`
 	Date        string `json:"date"` // 格式 "2006-01-02 15:04:05"
-	PageURL     string `json:"page_url"`
 	TeacherID   uint   `json:"teacher_id"`
 	ClassID     uint   `json:"class_id"`
 	SubjectIDs  []uint `json:"subject_ids"` // 多个科目 ID

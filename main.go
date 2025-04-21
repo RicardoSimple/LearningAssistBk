@@ -40,7 +40,7 @@ func setupRouter() *gin.Engine {
 	corsCfg := cors.DefaultConfig()
 	corsCfg.AllowAllOrigins = true
 	corsCfg.AllowWebSockets = true
-	//corsCfg.AllowHeaders = append(corsCfg.AllowHeaders, "Origin, Authorization, Content-Type")
+	corsCfg.AllowHeaders = append(corsCfg.AllowHeaders, "Origin, Authorization, Content-Type")
 	r.Use(cors.New(corsCfg))
 
 	// ping 接口
@@ -63,6 +63,7 @@ func setupRouter() *gin.Engine {
 	}
 	apiNoAuth := r.Group("/api/v1")
 	{
+		apiNoAuth.GET("/user/routes", handler.GetRoutesHandler)
 		account := apiNoAuth.Group("/account")
 		{
 			account.GET("/auth/current", middleware.AuthMiddleware(), handler.CurrentUser)
@@ -86,10 +87,17 @@ func setupRouter() *gin.Engine {
 		{
 			course.POST("/create", handler.CreateCourseHandler)
 			course.POST("/subject/create", handler.CreateSubjectHandler)
+			course.GET("/subject/getAll", handler.GetSubjects)
+			course.GET("/get", handler.GetCoursesByPage)
 		}
 		class := api.Group("/class")
 		{
 			class.POST("/create", handler.CreateClassHandler)
+			class.GET("/list", handler.GetClassListHandler)
+		}
+		user := api.Group("/user")
+		{
+			user.GET("/list", handler.GetUserListHandler)
 		}
 	}
 	return r

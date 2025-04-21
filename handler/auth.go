@@ -97,9 +97,8 @@ func Register(c *gin.Context) {
 		UserType:    req.UserType,
 		ClassStage:  req.ClassStage,
 		// ClassNum:    req.ClassNum,
-		Gender:   req.Gender,
-		Name:     req.Name,
-		Nickname: req.NickName,
+		Gender: req.Gender,
+		Name:   req.Name,
 	})
 	if err != nil {
 		basic.RequestFailure(c, err.Error())

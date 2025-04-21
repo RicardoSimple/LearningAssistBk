@@ -44,3 +44,25 @@ func GetAllClasses(ctx context.Context) ([]schema.Class, error) {
 	err := DB.Find(&classes).Error
 	return classes, err
 }
+func GetClassesPage(ctx context.Context, page, pageSize int) ([]schema.Class, int64, error) {
+	var (
+		classes []schema.Class
+		total   int64
+	)
+
+	if err := DB.Model(&schema.Class{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * pageSize
+	err := DB.
+		Order("created_at desc").
+		Limit(pageSize).
+		Offset(offset).
+		Find(&classes).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return classes, total, nil
+}

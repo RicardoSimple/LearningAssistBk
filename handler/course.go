@@ -5,6 +5,8 @@ import (
 	"learning-assistant/handler/basic"
 	"learning-assistant/model"
 	"learning-assistant/service"
+	"learning-assistant/util"
+	"strconv"
 	"time"
 )
 
@@ -14,7 +16,7 @@ import (
 // @Success 200 []CourseResp basic.Resp{data=[]CourseResp}
 // @Router /api/v1/course/courses [get]
 func GetCoursesHandler(c *gin.Context) {
-	courses, err := service.GetAllCourses(c)
+	courses, _, err := service.GetCourses(c, -1, -1)
 	if err != nil {
 		basic.RequestFailure(c, "获取课程失败："+err.Error())
 		return
@@ -31,7 +33,55 @@ func GetCoursesHandler(c *gin.Context) {
 			Date:        c.Date.Format("2006-01-02 15:04:05"),
 		})
 	}
-	basic.Success(c, courses)
+	basic.Success(c, res)
+}
+
+// GetCoursesByPage 获取所有课程，分页查询
+// @Summary 获取课程列表
+// @Tags Course
+// @Param page query string
+// @Param pageSize query string
+// @Success 200 CoursePageResp basic.Resp{data=CoursePageResp}
+// @Router /api/v1/course/get [get]
+func GetCoursesByPage(c *gin.Context) {
+	page, pageSize := util.GetPageParams(c)
+	courses, _, err := service.GetCourses(c, page, pageSize)
+	if err != nil {
+		basic.RequestFailure(c, "获取课程失败："+err.Error())
+		return
+	}
+	res := make([]CourseResp, 0, len(courses))
+	for _, c := range courses {
+		res = append(res, CourseResp{
+			Id:          int(c.ID),
+			Cover:       c.Cover,
+			Name:        c.Name,
+			Subjects:    mapToSubjectResp(c.Subjects),
+			Description: c.Description,
+			Duration:    c.Duration,
+			Date:        c.Date.Format("2006-01-02 15:04:05"),
+		})
+	}
+	resp := CoursePageResp{
+		Courses:  res,
+		Total:    len(courses),
+		PageNum:  page,
+		PageSize: pageSize,
+	}
+	basic.Success(c, resp)
+}
+
+// GetSubjects 获取所有科目
+// @Summary 获取课程列表
+// @Tags Course
+// @Success 200 []SubjectResp basic.Resp{data=[]SubjectResp}
+// @Router /api/v1/course/subject/getAll [get]
+func GetSubjects(c *gin.Context) {
+	subsMap, err := service.GetSubjects(c)
+	if err != nil {
+		basic.RequestFailure(c, "error"+err.Error())
+	}
+	basic.Success(c, mapToSubjectResp(subsMap))
 }
 
 // CreateSubjectHandler 创建科目
@@ -74,6 +124,7 @@ func CreateCourseHandler(c *gin.Context) {
 		return
 	}
 	// todo 校验权限
+	duration, err := strconv.Atoi(req.Duration)
 	err = service.CreateCourse(c, &model.Course{
 		Name:        req.Name,
 		Subjects:    nil,
@@ -81,7 +132,7 @@ func CreateCourseHandler(c *gin.Context) {
 		Description: req.Description,
 		Duration:    "",
 		Date:        parsedTime,
-	}, req.SubjectIDs, req.Duration)
+	}, req.SubjectIDs, uint(duration))
 	if err != nil {
 		basic.RequestFailure(c, "创建课程失败："+err.Error())
 		return
