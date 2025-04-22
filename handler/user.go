@@ -89,10 +89,11 @@ func CreateUserByAdmin(c *gin.Context) {
 		basic.RequestFailureWithCode(c, "用户名已存在", aerrors.ParamsError)
 		return
 	}
+	hashPassword, err := util.HashPassword(consts.DefaultPassword)
 
 	user, err := service.CreateUser(c, &model.User{
 		Username:    req.Username,
-		Password:    consts.DefaultPassword,
+		Password:    hashPassword,
 		Email:       req.Email,
 		PhoneNumber: req.Phone,
 		UserType:    req.UserType,

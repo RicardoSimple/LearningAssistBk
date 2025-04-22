@@ -140,6 +140,68 @@ func CreateCourseHandler(c *gin.Context) {
 	basic.Success(c, nil)
 }
 
+// GetCourseDetailHandler 获取课程详情
+// @Summary 获取课程详情
+// @Tags Course
+// @Param id query int true "课程ID"
+// @Success 200 {object} basic.Resp{data=CourseResp}
+// @Router /api/v1/course/detail [get]
+func GetCourseDetailHandler(c *gin.Context) {
+	idStr := c.Query("id")
+	if idStr == "" {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		basic.RequestFailure(c, "课程ID格式错误")
+		return
+	}
+
+	course, err := service.GetCourseDetail(c, uint(id))
+	if err != nil {
+		basic.RequestFailure(c, "获取课程详情失败："+err.Error())
+		return
+	}
+
+	res := CourseDetailResp{
+		Id:          int(course.ID),
+		Cover:       course.Cover,
+		Name:        course.Name,
+		Subjects:    mapToSubjectResp(course.Subjects),
+		Description: course.Description,
+		Duration:    course.Duration,
+		Date:        course.Date.Format("2006-01-02 15:04:05"),
+	}
+	basic.Success(c, res)
+}
+
+// DeleteCourseHandler 删除课程
+// @Summary 删除课程
+// @Tags Course
+// @Param id query int true "课程ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/delete [post]
+func DeleteCourseHandler(c *gin.Context) {
+	idStr := c.Query("id")
+	if idStr == "" {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		basic.RequestFailure(c, "课程ID格式错误")
+		return
+	}
+
+	err = service.DeleteCourse(c, uint(id))
+	if err != nil {
+		basic.RequestFailure(c, "删除课程失败："+err.Error())
+		return
+	}
+	basic.Success(c, "删除成功")
+}
+
 func mapToSubjectResp(subs map[int]string) []SubjectResp {
 	res := make([]SubjectResp, 0, len(subs))
 	for k, v := range subs {

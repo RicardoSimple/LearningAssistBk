@@ -50,10 +50,33 @@ func CreateSubject(ctx context.Context, name string) (uint, error) {
 	}
 	return subject.ID, err
 }
+
+func GetCourseDetail(ctx context.Context, id uint) (*model.Course, error) {
+	c, err := dal.GetCourseWithSubjects(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Course{
+		ID:          c.ID,
+		Name:        c.Name,
+		Subjects:    makeSubjects2Map(c.Subjects),
+		Cover:       c.PageURL,
+		Description: c.Description,
+		Duration:    duration2Str(c.TotalTimeMinutes),
+		TeacherId:   c.TeacherID,
+		ClassId:     c.ClassID,
+		Date:        c.CreatedAt,
+	}, nil
+}
+
+func DeleteCourse(ctx context.Context, id uint) error {
+	return dal.DeleteCourseByID(ctx, id)
+}
+
 func makeSubjects2Map(subjects []schema.Subject) map[int]string {
 	m := make(map[int]string, len(subjects))
-	for i, s := range subjects {
-		m[i] = s.Name
+	for _, s := range subjects {
+		m[int(s.ID)] = s.Name
 	}
 	return m
 }

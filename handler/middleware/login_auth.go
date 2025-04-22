@@ -44,21 +44,37 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-//
-//r := gin.Default()
-//
-//authGroup := r.Group("/api/v1")
-//{
-//authGroup.Use(middleware.RequireRoles("admin", "teacher")) // 需要权限的接口
-//authGroup.GET("/class/list", GetClassListHandler)
-//authGroup.POST("/user/create", CreateUserHandler)
-//}
-//
-//studentGroup := r.Group("/api/v1/student")
-//{
-//studentGroup.Use(middleware.RequireRoles("student"))
-//studentGroup.GET("/course", GetStudentCourseHandler)
-//}
+// AuthAlwaysAllow 登录鉴权中间件 始终放行
+func AuthAlwaysAllow() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 获取Authorization头
+		tokenString := c.GetHeader(consts.Authotization_Header)
+		if tokenString == "" {
+			// websocket token信息
+			if strings.Contains(c.Request.RequestURI, "/ws") {
+				tokenString = c.GetHeader(consts.WebSocketAuthorization)
+			}
+			if tokenString == "" {
+				c.Next()
+			} else {
+				c.Writer.Header().Add(consts.WebSocketAuthorization, tokenString)
+			}
+		}
+
+		// 解析Token
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+		claims, err := util.ParseToken(tokenString)
+		if err != nil {
+			basic.AuthFailure(c)
+			return
+		}
+
+		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email)
+		// 更新用户登录时间+状态
+		go service.UpdateLoginStatus(context.Background(), claims.ID)
+		c.Next()
+	}
+}
 
 // AuthMiddlewareRequireRoles 要求用户角色属于指定列表
 func AuthMiddlewareRequireRoles(allowedRoles ...string) gin.HandlerFunc {

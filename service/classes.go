@@ -37,3 +37,6 @@ func GetClassListPage(ctx context.Context, page, pageSize int) ([]model.Class, i
 	}
 	return res, i, nil
 }
+func DeleteClassByID(ctx context.Context, id uint) error {
+	return dal.DeleteClassByID(ctx, id)
+}

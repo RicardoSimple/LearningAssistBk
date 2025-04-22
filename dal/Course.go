@@ -69,6 +69,11 @@ func GetCourseWithSubjects(ctx context.Context, courseID uint) (*schema.Course, 
 	err := DB.Preload("Subjects").First(&course, courseID).Error
 	return &course, err
 }
+
+func DeleteCourseByID(ctx context.Context, id uint) error {
+	return DB.Delete(&schema.Course{}, id).Error
+}
+
 func GetCoursesBySubjectID(ctx context.Context, subjectID uint) ([]schema.Course, error) {
 	var courses []schema.Course
 	err := DB.Joins("JOIN course_subjects ON course_subjects.course_id = courses.id").

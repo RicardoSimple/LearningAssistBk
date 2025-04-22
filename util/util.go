@@ -43,3 +43,11 @@ func GetPageParams(c *gin.Context) (page int, pageSize int) {
 	}
 	return
 }
+func GetQueryUint(c *gin.Context, key string) (uint, error) {
+	val := c.Query(key)
+	id, err := strconv.ParseUint(val, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return uint(id), nil
+}

@@ -66,3 +66,6 @@ func GetClassesPage(ctx context.Context, page, pageSize int) ([]schema.Class, in
 
 	return classes, total, nil
 }
+func DeleteClassByID(ctx context.Context, id uint) error {
+	return DB.Delete(&schema.Class{}, id).Error
+}

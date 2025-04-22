@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"learning-assistant/handler/hash"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -13,7 +14,6 @@ import (
 	"learning-assistant/conf"
 	"learning-assistant/dal"
 	"learning-assistant/handler"
-	"learning-assistant/handler/hash"
 	"learning-assistant/handler/middleware"
 	"learning-assistant/service/cron"
 	"learning-assistant/util"
@@ -59,44 +59,47 @@ func setupRouter() *gin.Engine {
 	{
 		listener.GET("")
 	}
-	apiNoAuth := r.Group("/api/v1")
+	api := r.Group("/api/v1")
 	{
-		apiNoAuth.GET("/user/routes", handler.GetRoutesHandler)
-		account := apiNoAuth.Group("/account")
+		admin := api.Group("")
+		{
+			admin.POST("/course/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateCourseHandler)
+			admin.POST("/course/subject/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateSubjectHandler)
+			admin.GET("/course/get", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetCoursesByPage)
+			admin.GET("/course/subject/getAll", handler.GetSubjects)
+			admin.POST("/course/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteCourseHandler)
+
+			admin.GET("/user/routes", handler.GetRoutesHandler)
+
+			class := api.Group("/class")
+			{
+				class.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateClassHandler)
+				class.GET("/list", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetClassListHandler)
+				class.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteClassHandler)
+			}
+		}
+		account := api.Group("/account")
 		{
 			account.GET("/auth/current", middleware.AuthMiddleware(), handler.CurrentUser)
 			account.POST("/auth/login", handler.Login)
 			account.POST("/auth/register", handler.Register)
 			account.GET("/auth/check", middleware.AuthMiddleware(), handler.CheckToken)
 		}
-		course := apiNoAuth.Group("/course")
+		course := api.Group("/course")
 		{
-			course.GET("/courses", handler.GetCoursesHandler)
+			course.GET("/courses", middleware.AuthAlwaysAllow(), handler.GetCoursesHandler)
+			course.GET("/detail", handler.GetCourseDetailHandler)
 		}
-	}
-	api := r.Group("/api/v1", middleware.AuthMiddleware())
-	{
+
+		user := api.Group("/user")
+		{
+			user.GET("/list", middleware.AuthMiddlewareRequireRoles("admin"), handler.GetUserListHandler)
+			user.POST("/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateUserByAdmin)
+		}
 		imageHash := api.Group("/image")
 		{
 			imageHash.POST("/hash/bind", hash.BindImageHash)
 			imageHash.GET("/hash/similar", hash.SimilarImage)
-		}
-		course := api.Group("/course")
-		{
-			course.POST("/create", handler.CreateCourseHandler)
-			course.POST("/subject/create", handler.CreateSubjectHandler)
-			course.GET("/subject/getAll", handler.GetSubjects)
-			course.GET("/get", handler.GetCoursesByPage)
-		}
-		class := api.Group("/class")
-		{
-			class.POST("/create", handler.CreateClassHandler)
-			class.GET("/list", handler.GetClassListHandler)
-		}
-		user := api.Group("/user")
-		{
-			user.GET("/list", handler.GetUserListHandler)
-			user.POST("/create", handler.CreateUserByAdmin)
 		}
 	}
 	return r

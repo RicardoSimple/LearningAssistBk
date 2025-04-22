@@ -19,8 +19,6 @@ func CreateClassHandler(c *gin.Context) {
 		basic.RequestParamsFailure(c)
 		return
 	}
-	// todo 校验权限
-
 	// 判断年级
 	if !util.IsValidGrade(req.Grade) {
 		basic.RequestParamsFailure(c)
@@ -31,6 +29,29 @@ func CreateClassHandler(c *gin.Context) {
 		return
 	}
 	basic.Success(c, clazz)
+}
+
+// DeleteClassHandler 删除班级
+// @Summary 删除班级
+// @Tags Class
+// @Param id query int true "班级ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/class/delete [POST]
+func DeleteClassHandler(c *gin.Context) {
+	id, err := util.GetQueryUint(c, "id")
+	if err != nil || id == 0 {
+		basic.RequestParamsFailure(c)
+		return
+	}
+
+	// 可选：校验权限，例如仅管理员可删
+
+	err = service.DeleteClassByID(c, id)
+	if err != nil {
+		basic.RequestFailure(c, "删除班级失败："+err.Error())
+		return
+	}
+	basic.Success(c, "删除成功")
 }
 
 // GetClassListHandler 分页获取班级列表

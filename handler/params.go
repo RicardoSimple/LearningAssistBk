@@ -47,6 +47,16 @@ type CourseResp struct {
 	Date        string        `json:"date"`
 }
 
+type CourseDetailResp struct {
+	Id          int           `json:"id"`
+	Cover       string        `json:"cover"`
+	Name        string        `json:"name"`
+	Subjects    []SubjectResp `json:"subjects"`
+	Description string        `json:"description"`
+	Duration    string        `json:"duration"`
+	Date        string        `json:"date"`
+}
+
 type CoursePageResp struct {
 	Courses  []CourseResp `json:"courses"`
 	Total    int          `json:"total"`
