@@ -11,16 +11,18 @@ type UserInfo struct {
 	ID       uint   `json:"id"`
 	UserName string `json:"username"`
 	Email    string `json:"email"`
+	UserType string `json:"user_type"`
 }
 
 const userContextKey contextKey = "user-key"
 
 // SetUserToGinContext 存入 gin.Context（推荐在中间件中使用）
-func SetUserToGinContext(c *gin.Context, id uint, userName, email string) {
+func SetUserToGinContext(c *gin.Context, id uint, userName, email string, userType string) {
 	c.Set(string(userContextKey), &UserInfo{
 		ID:       id,
 		UserName: userName,
 		Email:    email,
+		UserType: userType,
 	})
 }
 

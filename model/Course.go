@@ -3,13 +3,13 @@ package model
 import "time"
 
 type Course struct {
-	ID          uint
-	Name        string
-	Subjects    map[int]string
-	Cover       string
-	Description string
-	Duration    string
-	TeacherId   uint
-	ClassId     uint
-	Date        time.Time
+	ID          uint           `json:"id"`
+	Name        string         `json:"name"`
+	Subjects    map[int]string `json:"subjects"`
+	Cover       string         `json:"cover"`
+	Description string         `json:"description"`
+	Duration    string         `json:"duration"`
+	TeacherId   uint           `json:"teacher_id"`
+	ClassId     uint           `json:"class_id"`
+	Date        time.Time      `json:"date"`
 }

@@ -55,6 +55,24 @@ var fullRoutes = []RouteInfo{
 				Component: "views/classes/index",
 				Meta:      MetaInfo{Title: "班级管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher", "student"}},
 			},
+			{
+				Path:      "assignment",
+				Name:      "作业管理",
+				Component: "views/assignment/index",
+				Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher"}},
+			},
+			{
+				Path:      "myClass",
+				Name:      "我的班级",
+				Component: "views/myClass/index",
+				Meta:      MetaInfo{Title: "我的班级", Icon: "dashboard", Affix: true, Roles: []string{"teacher"}},
+			},
+			{
+				Path:      "myAssignment",
+				Name:      "我的作业",
+				Component: "views/myAssignment/index",
+				Meta:      MetaInfo{Title: "我的作业", Icon: "dashboard", Affix: true, Roles: []string{"student"}},
+			},
 		},
 	},
 	{
@@ -80,6 +98,24 @@ var fullRoutes = []RouteInfo{
 		Name:      "班级管理",
 		Component: "views/classes/index",
 		Meta:      MetaInfo{Title: "班级管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher", "student"}},
+	},
+	{
+		Path:      "assignment",
+		Name:      "作业管理",
+		Component: "views/assignment/index",
+		Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher"}},
+	},
+	{
+		Path:      "myClass",
+		Name:      "我的班级",
+		Component: "views/myClass/index",
+		Meta:      MetaInfo{Title: "我的班级", Icon: "dashboard", Affix: true, Roles: []string{"teacher"}},
+	},
+	{
+		Path:      "myAssignment",
+		Name:      "我的作业",
+		Component: "views/myAssignment/index",
+		Meta:      MetaInfo{Title: "我的作业", Icon: "dashboard", Affix: true, Roles: []string{"student"}},
 	},
 	{
 		Path:      "/login",

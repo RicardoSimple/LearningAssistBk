@@ -45,7 +45,7 @@ func GetCoursesHandler(c *gin.Context) {
 // @Router /api/v1/course/get [get]
 func GetCoursesByPage(c *gin.Context) {
 	page, pageSize := util.GetPageParams(c)
-	courses, _, err := service.GetCourses(c, page, pageSize)
+	courses, total, err := service.GetCourses(c, page, pageSize)
 	if err != nil {
 		basic.RequestFailure(c, "获取课程失败："+err.Error())
 		return
@@ -64,7 +64,7 @@ func GetCoursesByPage(c *gin.Context) {
 	}
 	resp := CoursePageResp{
 		Courses:  res,
-		Total:    len(courses),
+		Total:    total,
 		PageNum:  page,
 		PageSize: pageSize,
 	}

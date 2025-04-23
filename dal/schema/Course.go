@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"fmt"
+	"learning-assistant/model"
 	"time"
 )
 
@@ -29,4 +31,29 @@ type Course struct {
 type CourseSubject struct {
 	CourseID  uint `gorm:"primaryKey"`
 	SubjectID uint `gorm:"primaryKey"`
+}
+
+func (course Course) ToType() *model.Course {
+	return &model.Course{
+		ID:          course.ID,
+		Name:        course.Name,
+		Subjects:    makeSubjects2Map(course.Subjects),
+		Cover:       course.PageURL,
+		Description: course.Description,
+		Duration:    duration2Str(course.TotalTimeMinutes),
+		TeacherId:   course.TeacherID,
+		ClassId:     course.ClassID,
+		Date:        course.CreatedAt,
+	}
+}
+
+func makeSubjects2Map(subjects []Subject) map[int]string {
+	m := make(map[int]string, len(subjects))
+	for _, s := range subjects {
+		m[int(s.ID)] = s.Name
+	}
+	return m
+}
+func duration2Str(totalTimeMinutes uint) string {
+	return fmt.Sprintf("%02d小时%02d分钟", totalTimeMinutes/60, totalTimeMinutes%60)
 }

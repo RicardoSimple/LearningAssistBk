@@ -71,7 +71,17 @@ func setupRouter() *gin.Engine {
 
 			admin.GET("/user/routes", handler.GetRoutesHandler)
 
-			class := api.Group("/class")
+			assignment := api.Group("/assignment")
+			{
+				assignment.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateAssignmentHandler)
+				assignment.GET("/listByCourse", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByCourseHandler)
+				assignment.GET("/listByTeacher", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByTeacherHandler)
+				assignment.GET("/detail", middleware.AuthAlwaysAllow(), handler.GetAssignmentDetailHandler)
+				assignment.GET("/list", middleware.AuthAlwaysAllow(), handler.GetAssignments)
+				assignment.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteAssignmentHandler)
+			}
+
+			class := admin.Group("/class")
 			{
 				class.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateClassHandler)
 				class.GET("/list", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetClassListHandler)
