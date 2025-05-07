@@ -80,6 +80,7 @@ func setupRouter() *gin.Engine {
 				assignment.GET("/list", middleware.AuthAlwaysAllow(), handler.GetAssignments)
 				assignment.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteAssignmentHandler)
 				assignment.GET("/my", middleware.AuthMiddlewareRequireRoles("student"), handler.GetCurrentUserAssignmentHandler)
+				assignment.POST("/submit", middleware.AuthMiddlewareRequireRoles("student"), handler.SubmitAssignmentHandler)
 			}
 
 			class := admin.Group("/class")

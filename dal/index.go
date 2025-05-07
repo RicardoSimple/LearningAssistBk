@@ -45,7 +45,10 @@ func InitConnection(ctx context.Context) {
 
 func RefreshMigrate(ctx context.Context) {
 	log.Info("init migrate")
-	err := DB.AutoMigrate(&schema.ImageHash{}, &schema.User{}, &schema.Message{}, &schema.Media{}, &schema.ChatGroup{}, &schema.Class{}, &schema.ClassTeacher{}, &schema.Assignment{}, &schema.Course{}, &schema.Subject{}, &schema.CourseSubject{})
+	err := DB.AutoMigrate(
+		&schema.ImageHash{}, &schema.User{}, &schema.Message{}, &schema.Media{}, &schema.ChatGroup{},
+		&schema.Class{}, &schema.ClassTeacher{}, &schema.Assignment{}, &schema.Course{}, &schema.Subject{},
+		&schema.CourseSubject{}, &schema.AssignmentSubmission{})
 	if err != nil {
 		panic("数据库表更新失败")
 	}
