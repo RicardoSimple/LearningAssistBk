@@ -28,6 +28,7 @@ type CustomClaims struct {
 	Email    string `json:"email"`
 	Gender   string `json:"gender"`
 	UserType string `json:"user_type"`
+	ClassId  uint   `json:"class_id"`
 	jwt.StandardClaims
 }
 type RefreshTokenClaims struct {
@@ -58,6 +59,7 @@ func GenerateTokens(user *model.User) (*model.TokenInfo, error) {
 		Email:    user.Email,
 		Gender:   user.Gender,
 		UserType: user.UserType,
+		ClassId:  user.ClassId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: accessTokenExpiration.Unix(),
 		},

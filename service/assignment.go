@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func CreateAssignment(ctx context.Context, title, content string, courseID, teacherID uint, due time.Time) (*model.Assignment, error) {
-	assignment, err := dal.CreateAssignment(ctx, title, content, courseID, teacherID, due)
+func CreateAssignment(ctx context.Context, title, content string, courseID, teacherID, classId uint, due time.Time) (*model.Assignment, error) {
+	assignment, err := dal.CreateAssignment(ctx, title, content, courseID, teacherID, classId, due)
 	if err != nil {
 		return nil, err
 	}
@@ -64,4 +64,7 @@ func GetAssignmentByID(ctx context.Context, id uint) (*model.Assignment, error) 
 
 func DeleteAssignment(ctx context.Context, id uint) error {
 	return dal.DeleteAssignment(ctx, id)
+}
+func GetAssignmentsByClassIdPage(ctx context.Context, classID uint, page, pageSize int) ([]*model.Assignment, int64, error) {
+	return dal.GetAssignmentsByClassIdPage(ctx, classID, page, pageSize)
 }

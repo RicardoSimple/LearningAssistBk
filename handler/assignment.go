@@ -16,6 +16,7 @@ type CreateAssignmentReq struct {
 	CourseID  uint   `json:"course_id" binding:"required"`
 	TeacherID uint   `json:"teacher_id" binding:"required"`
 	DueDate   string `json:"due_date" binding:"required"` // 格式：2025-05-01 23:59:00
+	ClassId   uint   `json:"class_id" binding:"required"`
 }
 type AssignmentPageResp struct {
 	Courses  []*model.Assignment `json:"list"`
@@ -36,14 +37,17 @@ func CreateAssignmentHandler(c *gin.Context) {
 		basic.RequestParamsFailure(c)
 		return
 	}
-
+	if req.ClassId == 0 {
+		basic.RequestFailure(c, "请先绑定班级")
+		return
+	}
 	dueTime, err := time.Parse("2006-01-02 15:04:05", req.DueDate)
 	if err != nil {
 		basic.RequestFailure(c, "截止时间格式错误，应为：2006-01-02 15:04:05")
 		return
 	}
 
-	assignment, err := service.CreateAssignment(c, req.Title, req.Content, req.CourseID, req.TeacherID, dueTime)
+	assignment, err := service.CreateAssignment(c, req.Title, req.Content, req.CourseID, req.TeacherID, req.ClassId, dueTime)
 	if err != nil {
 		basic.RequestFailure(c, "创建作业失败："+err.Error())
 		return
@@ -157,4 +161,43 @@ func DeleteAssignmentHandler(c *gin.Context) {
 		return
 	}
 	basic.Success(c, "已删除")
+}
+
+// GetCurrentUserAssignmentHandler
+// @Summary 学生获取所在班级的作业（分页）
+// @Tags Assignment
+// @Param page query int false "页码"
+// @Param page_size query int false "每页条数"
+// @Success 200 {object} basic.Resp{data=AssignmentPageResp}
+// @Router /api/v1/assignment/my [get]
+func GetCurrentUserAssignmentHandler(c *gin.Context) {
+	user, err := util.GetUserFromGinContext(c)
+	if err != nil {
+		basic.AuthFailure(c)
+		return
+	}
+
+	if user.UserType != "student" {
+		basic.RequestFailure(c, "只有学生用户可以查看本班级作业")
+		return
+	}
+	if user.ClassID == 0 {
+		basic.RequestFailure(c, "您尚未绑定班级，请联系管理员绑定后重试")
+		return
+	}
+
+	page, pageSize := util.GetPageParams(c)
+	assignments, total, err := service.GetAssignmentsByClassIdPage(c, user.ClassID, page, pageSize)
+	if err != nil {
+		basic.RequestFailure(c, "获取作业失败："+err.Error())
+		return
+	}
+
+	resp := AssignmentPageResp{
+		Courses:  assignments,
+		Total:    int(total),
+		PageNum:  page,
+		PageSize: pageSize,
+	}
+	basic.Success(c, resp)
 }

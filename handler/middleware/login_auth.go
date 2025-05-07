@@ -37,7 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email, claims.UserType)
+		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email, claims.UserType, claims.ClassId)
 		// 更新用户登录时间+状态
 		go service.UpdateLoginStatus(context.Background(), claims.ID)
 		c.Next()
@@ -69,7 +69,7 @@ func AuthAlwaysAllow() gin.HandlerFunc {
 			return
 		}
 
-		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email, claims.UserType)
+		util.SetUserToGinContext(c, claims.ID, claims.UserName, claims.Email, claims.UserType, claims.ClassId)
 		// 更新用户登录时间+状态
 		go service.UpdateLoginStatus(context.Background(), claims.ID)
 		c.Next()
@@ -113,7 +113,7 @@ func AuthMiddlewareRequireRoles(allowedRoles ...string) gin.HandlerFunc {
 		}
 
 		// 放行并将用户信息保存
-		util.SetUserToGinContext(c, userInfo.ID, userInfo.UserName, userInfo.Email, userRole)
+		util.SetUserToGinContext(c, userInfo.ID, userInfo.UserName, userInfo.Email, userRole, userInfo.ClassId)
 
 		c.Next()
 	}

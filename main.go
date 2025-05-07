@@ -79,13 +79,19 @@ func setupRouter() *gin.Engine {
 				assignment.GET("/detail", middleware.AuthAlwaysAllow(), handler.GetAssignmentDetailHandler)
 				assignment.GET("/list", middleware.AuthAlwaysAllow(), handler.GetAssignments)
 				assignment.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteAssignmentHandler)
+				assignment.GET("/my", middleware.AuthMiddlewareRequireRoles("student"), handler.GetCurrentUserAssignmentHandler)
 			}
 
 			class := admin.Group("/class")
 			{
 				class.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateClassHandler)
 				class.GET("/list", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetClassListHandler)
+				class.GET("/all", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetAllClassHandler)
 				class.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteClassHandler)
+				class.POST("/bind", middleware.AuthMiddlewareRequireRoles("admin"), handler.BindTeacherToClassHandler)
+				class.GET("/my", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassHandler)
+				class.GET("/my/students", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassStudentsHandler)
+				class.POST("/user/bind", middleware.AuthMiddlewareRequireRoles("admin", "teacher"), handler.BindUserToClassHandler)
 			}
 		}
 		account := api.Group("/account")
@@ -105,6 +111,7 @@ func setupRouter() *gin.Engine {
 		{
 			user.GET("/list", middleware.AuthMiddlewareRequireRoles("admin"), handler.GetUserListHandler)
 			user.POST("/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateUserByAdmin)
+			user.GET("/byType", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetUserByType)
 		}
 		imageHash := api.Group("/image")
 		{

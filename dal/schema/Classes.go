@@ -1,6 +1,9 @@
 package schema
 
-import "time"
+import (
+	"learning-assistant/model"
+	"time"
+)
 
 // 班级表
 type Class struct {
@@ -16,4 +19,14 @@ type ClassTeacher struct {
 	ID        uint `gorm:"primaryKey" json:"id"`
 	TeacherID uint `gorm:"not null" json:"teacher_id"` // 外键: User
 	ClassID   uint `gorm:"not null" json:"class_id"`   // 外键: Class
+}
+
+func (c Class) ToType() *model.Class {
+	return &model.Class{
+		ID:         int(c.ID),
+		Name:       c.Name,
+		InviteCode: c.ClassNum,
+		Grade:      c.Grade,
+		CreatedAt:  c.CreatedAt.Format(time.DateTime),
+	}
 }

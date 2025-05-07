@@ -62,3 +62,32 @@ func GetUserListPage(ctx context.Context, page, pageSize int) ([]model.User, int
 	}
 	return res, i, nil
 }
+
+func GetUsersByType(ctx context.Context, userType string) ([]*model.User, error) {
+	users, err := dal.GetUsersByType(ctx, userType)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*model.User, 0, len(users))
+	for _, user := range users {
+		res = append(res, user.ToType())
+	}
+	return res, nil
+}
+func BindUserToClass(ctx context.Context, userID, classID uint) error {
+	user, err := dal.GetUserByID(ctx, userID)
+	s := consts.UserTypeToStringMap[user.UserType]
+	// 教师用户增加关联表
+	if s == consts.UserTypeTeacher {
+		err := BindTeacherToClass(ctx, userID, classID)
+		if err != nil {
+			return err
+		}
+	}
+	if err != nil {
+		return err
+	}
+	user.ClassId = classID
+	user.AddClassTime = time.Now()
+	return dal.UpdateUser(ctx, user)
+}

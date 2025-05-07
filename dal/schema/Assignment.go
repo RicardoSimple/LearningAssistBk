@@ -15,6 +15,7 @@ type Assignment struct {
 	Teacher   User      `gorm:"foreignKey:TeacherID" json:"teacher"` // 👈 添加这个字段以支持预加载
 	DueDate   time.Time `json:"due_date"`                            // 截止日期
 	CreatedAt time.Time `json:"created_at"`
+	ClassID   uint      `gorm:"not null" json:"class_id"` // 班级id
 }
 
 func (assignment Assignment) ToType() *model.Assignment {
@@ -28,5 +29,6 @@ func (assignment Assignment) ToType() *model.Assignment {
 		Teacher:   *assignment.Teacher.ToType(),
 		DueDate:   assignment.DueDate.Format(time.DateTime),
 		CreatedAt: assignment.CreatedAt.Format(time.DateTime),
+		ClassID:   assignment.ClassID,
 	}
 }

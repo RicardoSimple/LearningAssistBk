@@ -7,6 +7,7 @@ type Assignment struct {
 	CourseId  uint    `json:"course_id"`
 	Course    *Course `json:"course"`
 	TeacherId uint    `json:"teacher_id"`
+	ClassID   uint    `json:"class_id"`
 	Teacher   User    `json:"teacher"`
 	DueDate   string  `json:"due_date"`
 	CreatedAt string  `json:"created_at"`

@@ -105,3 +105,39 @@ func CreateUserByAdmin(c *gin.Context) {
 	}
 	basic.Success(c, user)
 }
+
+// GetUserByType 按照类型获取用户
+// @Summary 获取所有教师
+// @Tags User
+// @Success 200 {object} basic.Resp{data=[]UserResp}
+// @Router /api/v1/user/byType [get]
+func GetUserByType(c *gin.Context) {
+	t := c.Query("type")
+	if _, b := consts.UserTypeToIntMap[t]; !b {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	teachers, err := service.GetUsersByType(c, t)
+	if err != nil {
+		basic.RequestFailure(c, "获取用户列表失败："+err.Error())
+		return
+	}
+
+	result := make([]UserResp, 0, len(teachers))
+	for _, user := range teachers {
+		result = append(result, UserResp{
+			ID:          user.ID,
+			Username:    user.Username,
+			Email:       user.Email,
+			PhoneNumber: user.PhoneNumber,
+			Status:      user.Status,
+			CreatedAt:   user.CreatedAt.Format("2006-01-02 15:04:05"),
+			LastLogin:   user.LastLogin.Format("2006-01-02 15:04:05"),
+			UserType:    user.UserType,
+			ClassStage:  user.ClassStage,
+			Name:        user.Name,
+		})
+	}
+
+	basic.Success(c, result)
+}

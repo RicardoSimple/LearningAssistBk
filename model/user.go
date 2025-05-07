@@ -5,28 +5,30 @@ import (
 )
 
 type User struct {
-	ID          uint         `json:"ID,omitempty"`
-	Username    string       `json:"username,omitempty"`
-	Password    string       `json:"-"`
-	Email       string       `json:"email,omitempty"`
-	PhoneNumber string       `json:"phoneNumber,omitempty"`
-	FirstName   string       `json:"firstName,omitempty"`
-	LastName    string       `json:"lastName,omitempty"`
-	Gender      string       `json:"gender,omitempty"`
-	DateOfBirth time.Time    `json:"dateOfBirth"`
-	Address     string       `json:"address,omitempty"`
-	City        string       `json:"city,omitempty"`
-	State       string       `json:"state,omitempty"`
-	Country     string       `json:"country,omitempty"`
-	PostalCode  string       `json:"postalCode,omitempty"`
-	Status      string       `json:"status,omitempty"`
-	Groups      []*TinyGroup `json:"groups,omitempty"`
-	CreatedAt   time.Time    `json:"createdAt"`
-	UpdatedAt   time.Time    `json:"updatedAt"`
-	LastLogin   time.Time    `json:"lastLogin"`
-	UserType    string       `json:"userType,omitempty"`
-	ClassStage  string       `json:"class_stage,omitempty"`
-	Name        string       `json:"name,omitempty"`
+	ID           uint         `json:"ID,omitempty"`
+	Username     string       `json:"username,omitempty"`
+	Password     string       `json:"-"`
+	Email        string       `json:"email,omitempty"`
+	PhoneNumber  string       `json:"phoneNumber,omitempty"`
+	FirstName    string       `json:"firstName,omitempty"`
+	LastName     string       `json:"lastName,omitempty"`
+	Gender       string       `json:"gender,omitempty"`
+	DateOfBirth  time.Time    `json:"dateOfBirth"`
+	Address      string       `json:"address,omitempty"`
+	City         string       `json:"city,omitempty"`
+	State        string       `json:"state,omitempty"`
+	Country      string       `json:"country,omitempty"`
+	PostalCode   string       `json:"postalCode,omitempty"`
+	Status       string       `json:"status,omitempty"`
+	Groups       []*TinyGroup `json:"groups,omitempty"`
+	CreatedAt    time.Time    `json:"createdAt"`
+	UpdatedAt    time.Time    `json:"updatedAt"`
+	LastLogin    time.Time    `json:"lastLogin"`
+	UserType     string       `json:"userType,omitempty"`
+	ClassStage   string       `json:"class_stage,omitempty"`
+	Name         string       `json:"name,omitempty"`
+	AddClassTime time.Time    `json:"addClassTime,omitempty"`
+	ClassId      uint         `json:"classId,omitempty"`
 }
 
 // TinyGroup 基础群聊信息

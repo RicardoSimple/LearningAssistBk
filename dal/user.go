@@ -2,6 +2,7 @@ package dal
 
 import (
 	"context"
+	"learning-assistant/consts"
 
 	"gorm.io/gorm"
 
@@ -78,4 +79,20 @@ func GetUsersPage(ctx context.Context, page, pageSize int) ([]schema.User, int64
 		return nil, 0, err
 	}
 	return users, total, nil
+}
+
+// GetUsersByClassID 通过班级ID查询所有用户
+func GetUsersByClassID(ctx context.Context, classID uint) ([]schema.User, error) {
+	var users []schema.User
+	err := DB.WithContext(ctx).
+		Where("class_id = ?", classID).
+		Order("created_at desc").
+		Find(&users).Error
+	return users, err
+}
+
+func GetUsersByType(ctx context.Context, userType string) ([]*schema.User, error) {
+	var users []*schema.User
+	err := DB.WithContext(ctx).Where("user_type = ?", consts.UserTypeToIntMap[userType]).Find(&users).Error
+	return users, err
 }
