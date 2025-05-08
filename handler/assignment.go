@@ -201,3 +201,41 @@ func GetCurrentUserAssignmentHandler(c *gin.Context) {
 	}
 	basic.Success(c, resp)
 }
+
+// GetAssignmentDetailWithSubmissionHandler
+// @Summary 获取作业详情（含学生提交记录）
+// @Tags Assignment
+// @Param id query int true "作业ID"
+// @Success 200 {object} basic.Resp{data=AssignmentWithSubmissionResp}
+// @Router /api/v1/assignment/detail/full [get]
+func GetAssignmentDetailWithSubmissionHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	if id <= 0 {
+		basic.RequestParamsFailure(c)
+		return
+	}
+
+	user, err := util.GetUserFromGinContext(c)
+	if err != nil {
+		basic.AuthFailure(c)
+		return
+	}
+
+	assignment, err := service.GetAssignmentByID(c, uint(id))
+	if err != nil {
+		basic.RequestFailure(c, "获取作业失败："+err.Error())
+		return
+	}
+
+	submission, err := service.GetSubmissionByAssignmentAndUser(c, uint(id), user.ID)
+	if err != nil {
+		// 提交记录可以为空，不报错
+		submission = nil
+	}
+
+	resp := gin.H{
+		"assignment": assignment,
+		"submission": submission,
+	}
+	basic.Success(c, resp)
+}

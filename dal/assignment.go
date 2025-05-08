@@ -82,3 +82,11 @@ func GetAssignmentsByClassIdPage(ctx context.Context, classID uint, page, pageSi
 	}
 	return assignments, total, nil
 }
+func GetAssignmentById(ctx context.Context, assignmentID uint) (*schema.Assignment, error) {
+	var assignment schema.Assignment
+	err := DB.Preload("Teacher").
+		Preload("Course").
+		Where("id = ?", assignmentID).
+		Find(&assignment).Error
+	return &assignment, err
+}

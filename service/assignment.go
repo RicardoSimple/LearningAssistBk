@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"learning-assistant/dal"
-	"learning-assistant/dal/schema"
 	"learning-assistant/model"
 	"time"
 )
@@ -57,9 +56,11 @@ func GetAssignmentsByTeacherID(ctx context.Context, teacherID uint) ([]*model.As
 }
 
 func GetAssignmentByID(ctx context.Context, id uint) (*model.Assignment, error) {
-	var a schema.Assignment
-	err := dal.DB.First(&a, id).Error
-	return a.ToType(), err
+	byId, err := dal.GetAssignmentById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return byId.ToType(), err
 }
 
 func DeleteAssignment(ctx context.Context, id uint) error {
@@ -67,4 +68,14 @@ func DeleteAssignment(ctx context.Context, id uint) error {
 }
 func GetAssignmentsByClassIdPage(ctx context.Context, classID uint, page, pageSize int) ([]*model.Assignment, int64, error) {
 	return dal.GetAssignmentsByClassIdPage(ctx, classID, page, pageSize)
+}
+func GetSubmissionByAssignmentAndUser(ctx context.Context, assignmentID, userID uint) (*model.AssignmentSubmission, error) {
+	submission, err := dal.GetSubmissionByAssignmentAndUser(ctx, assignmentID, userID)
+	if err != nil {
+		return nil, err
+	}
+	if submission == nil {
+		return nil, nil
+	}
+	return submission.ToType(), nil
 }
