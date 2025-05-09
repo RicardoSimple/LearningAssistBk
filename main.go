@@ -84,6 +84,7 @@ func setupRouter() *gin.Engine {
 				assignment.GET("/detail/full", middleware.AuthMiddlewareRequireRoles("admin", "student", "teacher"), handler.GetAssignmentDetailWithSubmissionHandler)
 				assignment.GET("/submissions", middleware.AuthMiddlewareRequireRoles("student", "teacher", "admin"), handler.GetAssignmentSubmissionsHandler)
 				assignment.POST("/evaluate", middleware.AuthMiddlewareRequireRoles("teacher"), handler.EvaluateAssignmentSubmissionHandler)
+				assignment.POST("/algo/evaluate", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.SmartEvaluateAssignment)
 			}
 
 			class := admin.Group("/class")

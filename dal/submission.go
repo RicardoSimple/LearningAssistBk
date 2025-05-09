@@ -28,6 +28,14 @@ func GetMySubmissions(ctx context.Context, studentID uint) ([]schema.AssignmentS
 	return list, err
 }
 
+func GetSubmissionById(ctx context.Context, submissionId uint) (*schema.AssignmentSubmission, error) {
+	var sub schema.AssignmentSubmission
+	err := DB.WithContext(ctx).
+		Where("id = ?", submissionId).
+		First(&sub).Error
+	return &sub, err
+}
+
 func GetSubmissionsByAssignment(ctx context.Context, assignmentID uint) ([]schema.AssignmentSubmission, error) {
 	var list []schema.AssignmentSubmission
 	err := DB.WithContext(ctx).

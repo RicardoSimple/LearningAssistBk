@@ -164,3 +164,30 @@ func DeleteConversationHandler(c *gin.Context) {
 	}
 	basic.Success(c, "删除成功")
 }
+
+type SmartEvaluateReq struct {
+	AssignmentId uint `json:"assignmentId"`
+	SubmissionId uint `json:"submissionId"`
+}
+
+// SmartEvaluateAssignment 智能评估作业
+// @Summary 作业评估
+// @Tags Chat
+// @Param SmartEvaluateReq body int true "作业 ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/assignment/algo/evaluate [post]
+func SmartEvaluateAssignment(c *gin.Context) {
+	req := &SmartEvaluateReq{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		basic.RequestParamsFailure(c)
+		return
+	}
+
+	// todo 根据两个id确定缓存 减少开销
+	result, err := service.SmartEvaluateAssign(c, req.AssignmentId, req.SubmissionId)
+	if err != nil {
+		basic.RequestFailure(c, err.Error())
+		return
+	}
+	basic.Success(c, result)
+}

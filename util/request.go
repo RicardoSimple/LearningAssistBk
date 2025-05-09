@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"learning-assistant/util/log"
 	"net/http"
 	"strings"
 )
@@ -40,7 +41,7 @@ func DoJsonPost(url string, headers map[string]string, payload interface{}, resu
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("接口返回错误: %s", string(respBytes))
 	}
-
+	log.Info("respBytes:", string(respBytes))
 	if result != nil {
 		if err := json.Unmarshal(respBytes, result); err != nil {
 			return fmt.Errorf("响应解析失败: %w", err)

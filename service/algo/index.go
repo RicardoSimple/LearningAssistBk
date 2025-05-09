@@ -88,6 +88,7 @@ type PromptTokensDetails struct {
 
 type Choice struct {
 	Index        uint        `json:"index"`
+	Message      ChatMessage `json:"message"`
 	Delta        ChoiceDelta `json:"delta"`
 	FinishReason string      `json:"finish_reason"`
 }

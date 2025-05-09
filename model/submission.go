@@ -13,3 +13,8 @@ type AssignmentSubmission struct {
 	SubmittedAt  time.Time `json:"submitted_at"`
 	ReviewedAt   time.Time `json:"reviewed_at"`
 }
+
+type AssignmentEvaluate struct {
+	Score    float64 `json:"score"`
+	FeedBack string  `json:"feedback"`
+}
