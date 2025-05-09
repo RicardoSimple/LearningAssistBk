@@ -122,6 +122,13 @@ func setupRouter() *gin.Engine {
 			imageHash.POST("/hash/bind", hash.BindImageHash)
 			imageHash.GET("/hash/similar", hash.SimilarImage)
 		}
+		chat := api.Group("/chat")
+		{
+			chat.POST("/assistant", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.ChatAssistant)
+			chat.GET("/conversations", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetConversations)
+			chat.GET("/messages", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetMessages)
+			chat.POST("/conversation/delete", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.DeleteConversationHandler)
+		}
 	}
 	return r
 }
