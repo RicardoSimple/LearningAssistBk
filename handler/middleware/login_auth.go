@@ -65,7 +65,7 @@ func AuthAlwaysAllow() gin.HandlerFunc {
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 		claims, err := util.ParseToken(tokenString)
 		if err != nil {
-			basic.AuthFailure(c)
+			c.Next()
 			return
 		}
 

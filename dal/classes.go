@@ -2,6 +2,8 @@ package dal
 
 import (
 	"context"
+	"errors"
+	"gorm.io/gorm"
 	"learning-assistant/dal/schema"
 )
 
@@ -27,6 +29,17 @@ func GetClassesByTeacherID(ctx context.Context, teacherID uint) ([]schema.Class,
 		Where("class_teachers.teacher_id = ?", teacherID).
 		Scan(&classes).Error
 	return classes, err
+}
+func GetClassByClassNum(ctx context.Context, classNum string) (*schema.Class, error) {
+	var class schema.Class
+	err := DB.Where("class_num = ?", classNum).First(&class).Error
+	if err != nil {
+		return nil, err
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return &class, nil
 }
 func GetTeachersByClassID(ctx context.Context, classID uint) ([]uint, error) {
 	var teacherIDs []uint

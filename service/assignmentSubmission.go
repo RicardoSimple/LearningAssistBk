@@ -27,7 +27,7 @@ func GetAssignmentSubmissionsPage(ctx context.Context, assignmentID uint, page, 
 	}
 	return result, total, nil
 }
-func EvaluateAssignmentSubmission(ctx context.Context, submissionID uint, score int, feedback string) error {
+func EvaluateAssignmentSubmission(ctx context.Context, submissionID uint, score float64, feedback string) error {
 	now := time.Now()
 	return dal.UpdateAssignmentSubmissionEvaluation(ctx, submissionID, score, feedback, &now)
 }

@@ -22,7 +22,10 @@ type Course struct {
 	PageURL          string    `json:"page_url"`
 	Description      string    `gorm:"type:text" json:"description"`
 	TotalTimeMinutes uint      `json:"total_time"`
+	ViewCount        uint      `gorm:"default:0" json:"view_count"` // 👈 新增：点击量字段
 	CreatedAt        time.Time `json:"created_at"`
+	CourseDetail     string    `gorm:"type:text" json:"course_detail"`
+	FavoriteBy       []*User   `gorm:"many2many:user_course_favorites;"` // 被哪些用户收藏
 
 	Subjects []Subject `gorm:"many2many:course_subjects;" json:"subjects"`
 }
@@ -34,16 +37,25 @@ type CourseSubject struct {
 }
 
 func (course Course) ToType() *model.Course {
+
+	favoriteBy := make([]*model.User, 0, len(course.FavoriteBy))
+	for _, user := range course.FavoriteBy {
+		favoriteBy = append(favoriteBy, user.ToType())
+	}
+
 	return &model.Course{
-		ID:          course.ID,
-		Name:        course.Name,
-		Subjects:    makeSubjects2Map(course.Subjects),
-		Cover:       course.PageURL,
-		Description: course.Description,
-		Duration:    duration2Str(course.TotalTimeMinutes),
-		TeacherId:   course.TeacherID,
-		ClassId:     course.ClassID,
-		Date:        course.CreatedAt,
+		ID:           course.ID,
+		Name:         course.Name,
+		Subjects:     makeSubjects2Map(course.Subjects),
+		Cover:        course.PageURL,
+		Description:  course.Description,
+		Duration:     duration2Str(course.TotalTimeMinutes),
+		TeacherId:    course.TeacherID,
+		ClassId:      course.ClassID,
+		ViewCount:    course.ViewCount,
+		Date:         course.CreatedAt,
+		CourseDetail: course.CourseDetail,
+		FavoriteBy:   favoriteBy,
 	}
 }
 

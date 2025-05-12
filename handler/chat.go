@@ -20,9 +20,7 @@ type ChatReq struct {
 // @Tags Chat
 // @Accept json
 // @Produce text/event-stream
-//
-//	@Param body  ChatReq true
-//
+// @Param body  ChatReq true
 // @Success 200 {string} string "流式文本输出"
 // @Router /api/v1/chat/assistant [post]
 func ChatAssistant(c *gin.Context) {
@@ -190,4 +188,30 @@ func SmartEvaluateAssignment(c *gin.Context) {
 		return
 	}
 	basic.Success(c, result)
+}
+
+// SmartCourseDetail 智能获取课程详情及路线
+// @Summary 内容生成
+// @Tags Chat
+// @Param CreateCourseReq body int true "作业 ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/algo/detail [post]
+func SmartCourseDetail(c *gin.Context) {
+	req := &CreateCourseReq{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	// todo
+	// result, err := service.SmartCourseDetail(c)
+}
+
+// SmartAssignmentDetail 智能生成作业内容
+// @Summary 内容生成
+// @Tags Chat
+// @Param CreateCourseReq body int true "作业 ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/algo/detail [post]
+func SmartAssignmentDetail(c *gin.Context) {
+
 }

@@ -14,9 +14,6 @@ import (
 )
 
 func CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
-
-	// todo 自动加入班级
-
 	suser, err := dal.CreateUser(ctx, util.ToUserSchema(user))
 	if err != nil {
 		return nil, err
@@ -24,8 +21,21 @@ func CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	return suser.ToType(), nil
 }
 
-func UpdateUser(ctx context.Context, user model.User) {
+func UpdateUserByAdmin(ctx context.Context, id uint, email, phoneNumber, userType, name string) error {
+	// 获取原始用户数据
+	oldUser, err2 := dal.GetUserByID(ctx, id)
+	if err2 != nil {
+		return err2
+	}
 
+	// 更新字段
+
+	oldUser.Name = name
+	oldUser.Email = email
+	oldUser.PhoneNumber = phoneNumber
+	oldUser.UserType = consts.UserTypeToIntMap[userType]
+
+	return dal.UpdateUser(ctx, oldUser)
 }
 
 func GetUserByUserName(ctx context.Context, userName string) (*model.User, error) {
@@ -62,7 +72,13 @@ func GetUserListPage(ctx context.Context, page, pageSize int) ([]model.User, int
 	}
 	return res, i, nil
 }
-
+func GetUserById(ctx context.Context, id uint) (*model.User, error) {
+	user, err := dal.GetUserByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return user.ToType(), nil
+}
 func GetUsersByType(ctx context.Context, userType string) ([]*model.User, error) {
 	users, err := dal.GetUsersByType(ctx, userType)
 	if err != nil {
@@ -90,4 +106,18 @@ func BindUserToClass(ctx context.Context, userID, classID uint) error {
 	user.ClassId = classID
 	user.AddClassTime = time.Now()
 	return dal.UpdateUser(ctx, user)
+}
+func DeleteUserByAdmin(ctx context.Context, id uint) error {
+	user, err := dal.GetUserByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+	// 删除关联数据
+
+	// 删除作业提交记录
+	// 删除收藏
+	return nil
 }

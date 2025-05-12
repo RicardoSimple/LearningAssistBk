@@ -45,16 +45,21 @@ type CourseResp struct {
 	Description string        `json:"description"`
 	Duration    string        `json:"duration"`
 	Date        string        `json:"date"`
+	ViewCount   uint          `json:"view_count"`
 }
 
 type CourseDetailResp struct {
-	Id          int           `json:"id"`
-	Cover       string        `json:"cover"`
-	Name        string        `json:"name"`
-	Subjects    []SubjectResp `json:"subjects"`
-	Description string        `json:"description"`
-	Duration    string        `json:"duration"`
-	Date        string        `json:"date"`
+	Id           int           `json:"id"`
+	Cover        string        `json:"cover"`
+	Name         string        `json:"name"`
+	Subjects     []SubjectResp `json:"subjects"`
+	Description  string        `json:"description"`
+	Duration     string        `json:"duration"`
+	Date         string        `json:"date"`
+	ViewCount    uint          `json:"view_count"`
+	CourseDetail string        `json:"course_detail"`
+	IsFavorite   bool          `json:"is_favorite"`
+	FavoriteNum  uint          `json:"favorite_num"`
 }
 
 type CoursePageResp struct {
@@ -69,14 +74,16 @@ type CreateSubjectReq struct {
 }
 
 type CreateCourseReq struct {
-	Name        string `json:"name" binding:"required"`
-	Cover       string `json:"cover"`
-	Description string `json:"description"`
-	Duration    string `json:"duration"`
-	Date        string `json:"date"` // 格式 "2006-01-02 15:04:05"
-	TeacherID   uint   `json:"teacher_id"`
-	ClassID     uint   `json:"class_id"`
-	SubjectIDs  []uint `json:"subject_ids"` // 多个科目 ID
+	Id           int    `json:"id"` // 用于更新接口
+	Name         string `json:"name" binding:"required"`
+	Cover        string `json:"cover"`
+	Description  string `json:"description"`
+	Duration     string `json:"duration"`
+	Date         string `json:"date"` // 格式 "2006-01-02 15:04:05"
+	TeacherID    uint   `json:"teacher_id"`
+	ClassID      uint   `json:"class_id"`
+	SubjectIDs   []uint `json:"subject_ids"` // 多个科目 ID
+	CourseDetail string `json:"course_detail"`
 }
 
 type CreateClassReq struct {

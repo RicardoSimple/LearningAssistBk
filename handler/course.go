@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/RicardoSimple/hao-tool/lists"
 	"github.com/gin-gonic/gin"
 	"learning-assistant/handler/basic"
 	"learning-assistant/model"
@@ -31,6 +32,7 @@ func GetCoursesHandler(c *gin.Context) {
 			Description: c.Description,
 			Duration:    c.Duration,
 			Date:        c.Date.Format("2006-01-02 15:04:05"),
+			ViewCount:   c.ViewCount,
 		})
 	}
 	basic.Success(c, res)
@@ -60,6 +62,7 @@ func GetCoursesByPage(c *gin.Context) {
 			Description: c.Description,
 			Duration:    c.Duration,
 			Date:        c.Date.Format("2006-01-02 15:04:05"),
+			ViewCount:   c.ViewCount,
 		})
 	}
 	resp := CoursePageResp{
@@ -126,12 +129,13 @@ func CreateCourseHandler(c *gin.Context) {
 	// todo 校验权限
 	duration, err := strconv.Atoi(req.Duration)
 	err = service.CreateCourse(c, &model.Course{
-		Name:        req.Name,
-		Subjects:    nil,
-		Cover:       req.Cover,
-		Description: req.Description,
-		Duration:    "",
-		Date:        parsedTime,
+		Name:         req.Name,
+		Subjects:     nil,
+		Cover:        req.Cover,
+		Description:  req.Description,
+		Duration:     "",
+		Date:         parsedTime,
+		CourseDetail: req.CourseDetail,
 	}, req.SubjectIDs, uint(duration))
 	if err != nil {
 		basic.RequestFailure(c, "创建课程失败："+err.Error())
@@ -164,14 +168,27 @@ func GetCourseDetailHandler(c *gin.Context) {
 		return
 	}
 
+	// 忽略未登录状态
+	user, _ := util.GetUserFromGinContext(c)
+	isFavorite := false
+	if user != nil && user.ID > 0 {
+		isFavorite = lists.InListWithFn(course.FavoriteBy, &model.User{ID: user.ID}, func(a, b *model.User) bool {
+			return a.ID == b.ID
+		})
+	}
+
 	res := CourseDetailResp{
-		Id:          int(course.ID),
-		Cover:       course.Cover,
-		Name:        course.Name,
-		Subjects:    mapToSubjectResp(course.Subjects),
-		Description: course.Description,
-		Duration:    course.Duration,
-		Date:        course.Date.Format("2006-01-02 15:04:05"),
+		Id:           int(course.ID),
+		Cover:        course.Cover,
+		Name:         course.Name,
+		Subjects:     mapToSubjectResp(course.Subjects),
+		Description:  course.Description,
+		Duration:     course.Duration,
+		Date:         course.Date.Format("2006-01-02 15:04:05"),
+		ViewCount:    course.ViewCount,
+		CourseDetail: course.CourseDetail,
+		IsFavorite:   isFavorite,
+		FavoriteNum:  uint(len(course.FavoriteBy)),
 	}
 	basic.Success(c, res)
 }
@@ -211,4 +228,139 @@ func mapToSubjectResp(subs map[int]string) []SubjectResp {
 		})
 	}
 	return res
+}
+
+// UpdateCourseHandler 更新课程
+// @Summary 更新课程
+// @Tags Course
+// @Param req body CreateCourseReq true "更新后的课程数据（需携带ID）"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/update [post]
+func UpdateCourseHandler(c *gin.Context) {
+	var req CreateCourseReq
+	if err := c.ShouldBindJSON(&req); err != nil || req.Id == 0 {
+		basic.RequestParamsFailure(c)
+		return
+	}
+
+	parsedTime, err := time.Parse("2006-01-02 15:04:05", req.Date)
+	if err != nil {
+		basic.RequestFailure(c, "时间格式错误")
+		return
+	}
+	duration, err := strconv.Atoi(req.Duration)
+	if err != nil {
+		basic.RequestFailure(c, "时长格式错误")
+		return
+	}
+
+	course := &model.Course{
+		ID:          uint(req.Id),
+		Name:        req.Name,
+		Cover:       req.Cover,
+		Description: req.Description,
+		Duration:    req.Duration,
+		Date:        parsedTime,
+	}
+
+	err = service.UpdateCourse(c, course, req.SubjectIDs, uint(duration))
+	if err != nil {
+		basic.RequestFailure(c, "更新课程失败："+err.Error())
+		return
+	}
+	basic.Success(c, "更新成功")
+}
+
+// IncrementCourseViewHandler 增加课程点击量
+// @Summary 课程点击统计
+// @Tags Course
+// @Param id query int true "课程ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/view/increase [post]
+func IncrementCourseViewHandler(c *gin.Context) {
+
+	id, err := util.GetQueryUint(c, "id")
+	if err != nil {
+		basic.RequestFailure(c, "课程ID格式错误")
+		return
+	}
+
+	if err := service.IncrementCourseView(c, id); err != nil {
+		basic.RequestFailure(c, "增加点击量失败："+err.Error())
+		return
+	}
+	basic.Success(c, "点击量+1")
+}
+
+// FavoriteCourseHandler 用户收藏课程
+// @Summary 收藏课程
+// @Tags Course
+// @Param course_id query int true "课程ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/favorite [post]
+func FavoriteCourseHandler(c *gin.Context) {
+	user, err := util.GetUserFromGinContext(c)
+	if err != nil {
+		basic.AuthFailure(c)
+		return
+	}
+	courseID, err := util.GetQueryUint(c, "course_id")
+	if err != nil || courseID == 0 {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	err = service.AddCourseFavorite(c, user.ID, courseID)
+	if err != nil {
+		basic.RequestFailure(c, "收藏失败："+err.Error())
+		return
+	}
+	basic.Success(c, "收藏成功")
+}
+
+// UnfavoriteCourseHandler 用户取消收藏课程
+// @Summary 取消收藏课程
+// @Tags Course
+// @Param course_id query int true "课程ID"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/unfavorite [post]
+func UnfavoriteCourseHandler(c *gin.Context) {
+	user, err := util.GetUserFromGinContext(c)
+	if err != nil {
+		basic.AuthFailure(c)
+		return
+	}
+	courseID, err := util.GetQueryUint(c, "course_id")
+	if err != nil || courseID == 0 {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	err = service.RemoveCourseFavorite(c, user.ID, courseID)
+	if err != nil {
+		basic.RequestFailure(c, "取消收藏失败："+err.Error())
+		return
+	}
+	basic.Success(c, "取消收藏成功")
+}
+
+// FindHotNCourse 获取点击量前n的课程
+// @Summary hot课程
+// @Tags Course
+// @Param n query int true "n"
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/hot [get]
+func FindHotNCourse(c *gin.Context) {
+	n, err := util.GetQueryUint(c, "n")
+	if err != nil {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	if n <= 0 {
+		n = 10
+	}
+	courses, err := service.GetHotNCourses(c, int(n))
+	if err != nil {
+		basic.RequestFailure(c, "获取失败")
+		return
+	}
+	basic.Success(c, courses)
 }

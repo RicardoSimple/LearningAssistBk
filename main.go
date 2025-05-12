@@ -61,44 +61,35 @@ func setupRouter() *gin.Engine {
 	}
 	api := r.Group("/api/v1")
 	{
-		admin := api.Group("")
+
+		assignment := api.Group("/assignment")
 		{
-			admin.POST("/course/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateCourseHandler)
-			admin.POST("/course/subject/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateSubjectHandler)
-			admin.GET("/course/get", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetCoursesByPage)
-			admin.GET("/course/subject/getAll", handler.GetSubjects)
-			admin.POST("/course/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteCourseHandler)
-
-			admin.GET("/user/routes", handler.GetRoutesHandler)
-
-			assignment := api.Group("/assignment")
-			{
-				assignment.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateAssignmentHandler)
-				assignment.GET("/listByCourse", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByCourseHandler)
-				assignment.GET("/listByTeacher", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByTeacherHandler)
-				assignment.GET("/detail", middleware.AuthAlwaysAllow(), handler.GetAssignmentDetailHandler)
-				assignment.GET("/list", middleware.AuthAlwaysAllow(), handler.GetAssignments)
-				assignment.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteAssignmentHandler)
-				assignment.GET("/my", middleware.AuthMiddlewareRequireRoles("student"), handler.GetCurrentUserAssignmentHandler)
-				assignment.POST("/submit", middleware.AuthMiddlewareRequireRoles("student"), handler.SubmitAssignmentHandler)
-				assignment.GET("/detail/full", middleware.AuthMiddlewareRequireRoles("admin", "student", "teacher"), handler.GetAssignmentDetailWithSubmissionHandler)
-				assignment.GET("/submissions", middleware.AuthMiddlewareRequireRoles("student", "teacher", "admin"), handler.GetAssignmentSubmissionsHandler)
-				assignment.POST("/evaluate", middleware.AuthMiddlewareRequireRoles("teacher"), handler.EvaluateAssignmentSubmissionHandler)
-				assignment.POST("/algo/evaluate", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.SmartEvaluateAssignment)
-			}
-
-			class := admin.Group("/class")
-			{
-				class.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateClassHandler)
-				class.GET("/list", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetClassListHandler)
-				class.GET("/all", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetAllClassHandler)
-				class.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteClassHandler)
-				class.POST("/bind", middleware.AuthMiddlewareRequireRoles("admin"), handler.BindTeacherToClassHandler)
-				class.GET("/my", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassHandler)
-				class.GET("/my/students", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassStudentsHandler)
-				class.POST("/user/bind", middleware.AuthMiddlewareRequireRoles("admin", "teacher"), handler.BindUserToClassHandler)
-			}
+			assignment.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateAssignmentHandler)
+			assignment.GET("/listByCourse", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByCourseHandler)
+			assignment.GET("/listByTeacher", middleware.AuthAlwaysAllow(), handler.GetAssignmentsByTeacherHandler)
+			assignment.GET("/detail", middleware.AuthAlwaysAllow(), handler.GetAssignmentDetailHandler)
+			assignment.GET("/list", middleware.AuthAlwaysAllow(), handler.GetAssignments)
+			assignment.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteAssignmentHandler)
+			assignment.GET("/my", middleware.AuthMiddlewareRequireRoles("student"), handler.GetCurrentUserAssignmentHandler)
+			assignment.POST("/submit", middleware.AuthMiddlewareRequireRoles("student"), handler.SubmitAssignmentHandler)
+			assignment.GET("/detail/full", middleware.AuthMiddlewareRequireRoles("admin", "student", "teacher"), handler.GetAssignmentDetailWithSubmissionHandler)
+			assignment.GET("/submissions", middleware.AuthMiddlewareRequireRoles("student", "teacher", "admin"), handler.GetAssignmentSubmissionsHandler)
+			assignment.POST("/evaluate", middleware.AuthMiddlewareRequireRoles("teacher"), handler.EvaluateAssignmentSubmissionHandler)
+			assignment.POST("/algo/evaluate", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.SmartEvaluateAssignment)
 		}
+
+		class := api.Group("/class")
+		{
+			class.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateClassHandler)
+			class.GET("/list", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetClassListHandler)
+			class.GET("/all", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetAllClassHandler)
+			class.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteClassHandler)
+			class.POST("/bind", middleware.AuthMiddlewareRequireRoles("admin"), handler.BindTeacherToClassHandler)
+			class.GET("/my", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassHandler)
+			class.GET("/my/students", middleware.AuthMiddlewareRequireRoles("teacher"), handler.GetMyClassStudentsHandler)
+			class.POST("/user/bind", middleware.AuthMiddlewareRequireRoles("admin", "teacher"), handler.BindUserToClassHandler)
+		}
+
 		account := api.Group("/account")
 		{
 			account.GET("/auth/current", middleware.AuthMiddleware(), handler.CurrentUser)
@@ -106,23 +97,34 @@ func setupRouter() *gin.Engine {
 			account.POST("/auth/register", handler.Register)
 			account.GET("/auth/check", middleware.AuthMiddleware(), handler.CheckToken)
 		}
+
 		course := api.Group("/course")
 		{
-			course.GET("/courses", middleware.AuthAlwaysAllow(), handler.GetCoursesHandler)
-			course.GET("/detail", handler.GetCourseDetailHandler)
+			course.POST("/create", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.CreateCourseHandler)
+			course.POST("/subject/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateSubjectHandler)
+			course.GET("/get", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.GetCoursesByPage)
+			course.GET("/subject/getAll", handler.GetSubjects)
+			course.POST("/delete", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.DeleteCourseHandler)
+			course.GET("/courses", handler.GetCoursesHandler)
+			course.GET("/detail", middleware.AuthAlwaysAllow(), handler.GetCourseDetailHandler)
+			course.POST("/update", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.UpdateCourseHandler)
+			course.GET("/view/increase", middleware.AuthAlwaysAllow(), handler.IncrementCourseViewHandler)
+			course.POST("/favorite", middleware.AuthMiddlewareRequireRoles("teacher", "admin", "student"), handler.FavoriteCourseHandler)
+			course.POST("/unfavorite", middleware.AuthMiddlewareRequireRoles("teacher", "admin", "student"), handler.UnfavoriteCourseHandler)
+			course.GET("/hot", handler.FindHotNCourse)
 		}
 
 		user := api.Group("/user")
 		{
+			user.GET("/routes", handler.GetRoutesHandler)
 			user.GET("/list", middleware.AuthMiddlewareRequireRoles("admin"), handler.GetUserListHandler)
 			user.POST("/create", middleware.AuthMiddlewareRequireRoles("admin"), handler.CreateUserByAdmin)
 			user.GET("/byType", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetUserByType)
+			user.POST("/update", middleware.AuthMiddlewareRequireRoles("admin"), handler.UpdateUserByAdmin)
+			user.GET("/info", middleware.AuthMiddlewareRequireRoles("admin"), handler.GetUserInfoById)
+			user.POST("/delete", middleware.AuthMiddlewareRequireRoles("admin"), handler.DeleteUserByAdmin)
 		}
-		imageHash := api.Group("/image")
-		{
-			imageHash.POST("/hash/bind", hash.BindImageHash)
-			imageHash.GET("/hash/similar", hash.SimilarImage)
-		}
+
 		chat := api.Group("/chat")
 		{
 			chat.POST("/assistant", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.ChatAssistant)
@@ -130,6 +132,13 @@ func setupRouter() *gin.Engine {
 			chat.GET("/messages", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.GetMessages)
 			chat.POST("/conversation/delete", middleware.AuthMiddlewareRequireRoles("admin", "teacher", "student"), handler.DeleteConversationHandler)
 		}
+
+		imageHash := api.Group("/image")
+		{
+			imageHash.POST("/hash/bind", hash.BindImageHash)
+			imageHash.GET("/hash/similar", hash.SimilarImage)
+		}
+
 	}
 	return r
 }

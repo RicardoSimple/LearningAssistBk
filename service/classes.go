@@ -12,7 +12,17 @@ import (
 
 func CreateClass(ctx context.Context, name string, grade string) (*schema.Class, error) {
 	classNum := util.GenerateInviteCode(consts.ClassNumLength)
-
+	// 防止classNUm重复
+	for {
+		num, err := dal.GetClassByClassNum(ctx, classNum)
+		if err != nil {
+			return nil, err
+		}
+		if num == nil {
+			break
+		}
+		classNum = util.GenerateInviteCode(consts.ClassNumLength)
+	}
 	class, err := dal.CreateClass(ctx, name, grade, classNum)
 	if err != nil {
 		return nil, err
@@ -76,4 +86,14 @@ func GetStudentsByClassId(ctx context.Context, classId string) ([]*model.User, e
 }
 func BindTeacherToClass(ctx context.Context, teacherID, classID uint) error {
 	return dal.AssignTeacherToClass(ctx, teacherID, classID)
+}
+func GetClassByClassNum(ctx context.Context, classNum string) (*model.Class, error) {
+	num, err := dal.GetClassByClassNum(ctx, classNum)
+	if err != nil {
+		return nil, err
+	}
+	if num == nil {
+		return nil, nil
+	}
+	return num.ToType(), nil
 }

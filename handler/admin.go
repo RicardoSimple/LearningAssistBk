@@ -59,7 +59,7 @@ var fullRoutes = []RouteInfo{
 				Path:      "assignment",
 				Name:      "作业管理",
 				Component: "views/assignment/index",
-				Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher"}},
+				Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"teacher"}},
 			},
 			{
 				Path:      "myClass",
@@ -103,7 +103,7 @@ var fullRoutes = []RouteInfo{
 		Path:      "assignment",
 		Name:      "作业管理",
 		Component: "views/assignment/index",
-		Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"admin", "teacher"}},
+		Meta:      MetaInfo{Title: "作业管理", Icon: "dashboard", Affix: true, Roles: []string{"teacher"}},
 	},
 	{
 		Path:      "myClass",

@@ -13,7 +13,7 @@ const (
 
 	ClassNumLength = 6
 
-	DefaultPassword = "123456"
+	DefaultPassword = "123123"
 )
 
 var (

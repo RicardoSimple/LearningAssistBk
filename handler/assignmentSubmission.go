@@ -81,9 +81,9 @@ func GetAssignmentSubmissionsHandler(c *gin.Context) {
 }
 
 type EvaluateAssignmentReq struct {
-	SubmissionID uint   `json:"submission_id" binding:"required"`
-	Score        int    `json:"score" binding:"required"`
-	Feedback     string `json:"feedback"`
+	SubmissionID uint    `json:"submission_id" binding:"required"`
+	Score        float64 `json:"score" binding:"required"`
+	Feedback     string  `json:"feedback"`
 }
 
 // EvaluateAssignmentSubmissionHandler 教师评价作业提交
@@ -94,6 +94,7 @@ type EvaluateAssignmentReq struct {
 // @Router /api/v1/assignment/evaluate [post]
 func EvaluateAssignmentSubmissionHandler(c *gin.Context) {
 	var req EvaluateAssignmentReq
+	// todo fix bug
 	if err := c.ShouldBindJSON(&req); err != nil || req.SubmissionID == 0 {
 		basic.RequestParamsFailure(c)
 		return

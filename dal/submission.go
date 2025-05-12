@@ -81,7 +81,7 @@ func GetAssignmentSubmissionsPage(ctx context.Context, assignmentID uint, page, 
 		Find(&list).Error
 	return list, total, err
 }
-func UpdateAssignmentSubmissionEvaluation(ctx context.Context, id uint, score int, feedback string, reviewedAt *time.Time) error {
+func UpdateAssignmentSubmissionEvaluation(ctx context.Context, id uint, score float64, feedback string, reviewedAt *time.Time) error {
 	return DB.WithContext(ctx).
 		Model(&schema.AssignmentSubmission{}).
 		Where("id = ?", id).

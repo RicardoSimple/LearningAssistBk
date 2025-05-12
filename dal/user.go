@@ -39,7 +39,17 @@ func UpdateUserWithGroups(ctx context.Context, user *schema.User) error {
 // GetUserByID 通过ID查询用户
 func GetUserByID(ctx context.Context, id uint) (*schema.User, error) {
 	var user schema.User
-	if err := DB.WithContext(ctx).Preload("ChatGroups").First(&user, id).Error; err != nil {
+	if err := DB.WithContext(ctx).Preload("ChatGroups").
+		Preload("FavoriteCourses").
+		First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func GetUserByEmail(ctx context.Context, email string) (*schema.User, error) {
+	var user schema.User
+	if err := DB.WithContext(ctx).Preload("ChatGroups").Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

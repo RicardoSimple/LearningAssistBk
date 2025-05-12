@@ -48,7 +48,8 @@ func RefreshMigrate(ctx context.Context) {
 	err := DB.AutoMigrate(
 		&schema.ImageHash{}, &schema.User{}, &schema.Message{}, &schema.Media{}, &schema.ChatGroup{},
 		&schema.Class{}, &schema.ClassTeacher{}, &schema.Assignment{}, &schema.Course{}, &schema.Subject{},
-		&schema.CourseSubject{}, &schema.AssignmentSubmission{}, &schema.Conversation{}, &schema.ChatMessage{})
+		&schema.CourseSubject{}, &schema.AssignmentSubmission{}, &schema.Conversation{}, &schema.ChatMessage{},
+		&schema.UserCourseFavorite{})
 	if err != nil {
 		panic("数据库表更新失败")
 	}
