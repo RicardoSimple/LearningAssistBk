@@ -193,17 +193,48 @@ func SmartEvaluateAssignment(c *gin.Context) {
 // SmartCourseDetail 智能获取课程详情及路线
 // @Summary 内容生成
 // @Tags Chat
-// @Param CreateCourseReq body int true "作业 ID"
+// @Param GenerateCourseReq body int true "作业 ID"
 // @Success 200 {object} basic.Resp
 // @Router /api/v1/course/algo/detail [post]
 func SmartCourseDetail(c *gin.Context) {
-	req := &CreateCourseReq{}
+	req := &GenerateCourseReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		basic.RequestParamsFailure(c)
 		return
 	}
 	// todo
-	// result, err := service.SmartCourseDetail(c)
+
+	result, err := service.SmartCourseDetail(c, req.Name, req.Description, req.SubjectIDs, req.CoursePrompt)
+	if err != nil {
+		basic.RequestFailure(c, err.Error())
+		return
+	}
+	basic.Success(c, result)
+}
+
+// SmartNewCourses 个性化推荐课程
+// @Summary 内容生成
+// @Tags Chat
+// @Success 200 {object} basic.Resp
+// @Router /api/v1/course/algo/hot [post]
+func SmartNewCourses(c *gin.Context) {
+	n, err := util.GetQueryUint(c, "n")
+	if err != nil {
+		basic.RequestParamsFailure(c)
+		return
+	}
+	user, _ := util.GetUserFromGinContext(c)
+	var userId uint = 0
+	if user != nil {
+		// 已登录
+		userId = user.ID
+	}
+	list, err := service.SmartLLMHotList(c, userId, n)
+	if err != nil {
+		basic.RequestFailure(c, err.Error())
+		return
+	}
+	basic.Success(c, list)
 }
 
 // SmartAssignmentDetail 智能生成作业内容

@@ -86,6 +86,13 @@ type CreateCourseReq struct {
 	CourseDetail string `json:"course_detail"`
 }
 
+type GenerateCourseReq struct {
+	Name         string `json:"name" binding:"required"`
+	Description  string `json:"description"`
+	SubjectIDs   []uint `json:"subject_ids"` // 多个科目 ID
+	CoursePrompt string `json:"prompt"`
+}
+
 type CreateClassReq struct {
 	Name  string `json:"name" binding:"required"`
 	Grade string `json:"grade"`

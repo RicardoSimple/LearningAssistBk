@@ -23,6 +23,23 @@ func GetAllSubjects(ctx context.Context) ([]schema.Subject, error) {
 	return subjects, err
 }
 
+// GetSubjectNamesByIDs 根据多个 subject ID 查询对应的名称
+func GetSubjectNamesByIDs(ctx context.Context, ids []uint) ([]string, error) {
+	var subjects []schema.Subject
+	if err := DB.WithContext(ctx).
+		Model(&schema.Subject{}).
+		Where("id IN ?", ids).
+		Find(&subjects).Error; err != nil {
+		return nil, err
+	}
+
+	names := make([]string, 0, len(subjects))
+	for _, s := range subjects {
+		names = append(names, s.Name)
+	}
+	return names, nil
+}
+
 func CreateCourseWithSubjects(
 	ctx context.Context,
 	name string,
@@ -136,6 +153,7 @@ func UpdateCourseWithSubjects(ctx context.Context,
 	description, pageURL string,
 	subjectIDs []uint,
 	totalMinutes uint,
+	courseDetail string,
 ) error {
 	// 查询id
 	course, err := GetCourseByID(ctx, id)
@@ -155,6 +173,7 @@ func UpdateCourseWithSubjects(ctx context.Context,
 	course.PageURL = pageURL
 	course.Subjects = subjects
 	course.TotalTimeMinutes = totalMinutes
+	course.CourseDetail = courseDetail
 
 	return DB.WithContext(ctx).Session(&gorm.Session{FullSaveAssociations: true}).Save(course).Error
 }
@@ -193,6 +212,23 @@ func GetTopViewedCourses(ctx context.Context, limit int) ([]schema.Course, error
 		Order("created_at DESC").
 		Limit(limit).
 		Find(&courses).Error
+	if err != nil {
+		return nil, err
+	}
+	return courses, nil
+}
+func GetFavoriteCoursesByUserID(ctx context.Context, userID uint) ([]schema.Course, error) {
+	var courses []schema.Course
+	if userID == 0 {
+		return courses, nil
+	}
+	err := DB.WithContext(ctx).
+		Model(&schema.Course{}).
+		Joins("JOIN user_course_favorites ON user_course_favorites.course_id = courses.id").
+		Where("user_course_favorites.user_id = ?", userID).
+		Preload("Subjects").
+		Find(&courses).Error
+
 	if err != nil {
 		return nil, err
 	}

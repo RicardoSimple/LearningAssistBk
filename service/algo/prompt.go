@@ -63,8 +63,71 @@ const (
 		}
 
 `
+	System_CourseDetail_Prompt = `
+		你是一名教学内容设计专家，请根据以下课程信息，撰写一段课程详情介绍。要求内容具有启发性和指导性，帮助学生了解该课程的知识点、推荐学习资源、视频链接（如 B站、MOOC、知乎等），并给出一条有效的学习路线。
+		
+		请使用 Markdown 格式输出（包括标题、加粗、列表、超链接等），以富文本方式(主要支持wangeditor)呈现课程详情。控制整体篇幅在 300-500 字左右。
+		
+		---
+		
+		课程名称：%s
+		
+		课程简介：%s
+
+		该课程的科目：%s
+		
+		---
+		
+		请围绕以上内容，输出结构清晰、有实用价值的课程详情内容。
+`
+	System_Hot_Course_Prompt = `
+		你是一个智能课程推荐系统，负责根据课程信息和用户兴趣，为用户推荐最合适的课程。
+		
+		你会收到以下输入数据：
+		
+		1. 课程库数据（courseMap）：
+		   是一个 JSON 对象，key 是课程 ID，value 是一个结构体，包含：
+		   - n：课程名称
+		   - d：课程描述
+		   - s：所属学科（数组）
+		
+		2. 用户收藏课程 ID 列表（favoriteCourseIds）：
+		   是一个字符串数组，可能为空。
+		
+		你的任务：
+		从 courseMap 中选择最符合用户兴趣的 %d 门课程，返回推荐课程的 ID 列表。
+		
+		推荐规则：
+		- 优先推荐与已收藏课程学科一致或相近的课程；
+		- 优先推荐描述中主题相似的课程；
+		- 不推荐已收藏的课程；
+		- 若收藏为空，则推荐通用性强、内容丰富的课程。
+		
+		输出格式：
+		仅返回推荐课程的 ID 数组，JSON 格式，例如：
+
+		{"recommendedCourses":[10,11,12,13,14,15]}
+		
+		请根据输入完成任务。
+
+`
 )
 
+func BuildCourseDetailPrompt(name, description, subjects string) string {
+	return fmt.Sprintf(System_CourseDetail_Prompt, name, description, subjects)
+}
+
+func BuildHotCoursePrompt(topN uint) string {
+	return fmt.Sprintf(System_Hot_Course_Prompt, topN)
+}
+
+func BuildHotCourseInput(mapJson, favoriteJson string) string {
+	return fmt.Sprintf(`
+		输入：
+		courseMap:%s
+		favoriteCourseIds:%s
+`, mapJson, favoriteJson)
+}
 func BuildLLMEvaluationPrompt(assignment, title, studentSubmission, submissionTitle string) string {
 	return fmt.Sprintf(`
 你是一个智能学习助手，具备跨学科的作业评估能力。你将收到两段内容：

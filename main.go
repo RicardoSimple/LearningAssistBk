@@ -112,6 +112,9 @@ func setupRouter() *gin.Engine {
 			course.POST("/favorite", middleware.AuthMiddlewareRequireRoles("teacher", "admin", "student"), handler.FavoriteCourseHandler)
 			course.POST("/unfavorite", middleware.AuthMiddlewareRequireRoles("teacher", "admin", "student"), handler.UnfavoriteCourseHandler)
 			course.GET("/hot", handler.FindHotNCourse)
+			course.POST("/algo/detail", middleware.AuthMiddlewareRequireRoles("teacher", "admin"), handler.SmartCourseDetail)
+			course.GET("/algo/hot", middleware.AuthAlwaysAllow(), handler.SmartNewCourses)
+			course.GET("/byId/get", handler.GetCourseById)
 		}
 
 		user := api.Group("/user")

@@ -74,6 +74,41 @@ func GetCoursesByPage(c *gin.Context) {
 	basic.Success(c, resp)
 }
 
+// GetCourseById 获取课程
+// @Summary 获取课程列表
+// @Tags Course
+// @Param id query uint
+// @Success 200 CoursePageResp basic.Resp{data=CoursePageResp}
+// @Router /api/v1/course/byId/get [get]
+func GetCourseById(c *gin.Context) {
+	id, err := util.GetQueryUint(c, "id")
+	if err != nil {
+		basic.RequestFailure(c, "<UNK>id<UNK>"+err.Error())
+		return
+	}
+	courseschema, err := service.GetCourseById(c, id)
+	if err != nil {
+		basic.RequestFailure(c, "<UNK>id<UNK>"+err.Error())
+		return
+	}
+	subjectsIds := make([]uint, 0, len(courseschema.Subjects))
+	for _, s := range courseschema.Subjects {
+		subjectsIds = append(subjectsIds, uint(s.ID))
+	}
+	basic.Success(c, CreateCourseReq{
+		Id:           int(courseschema.ID),
+		Name:         courseschema.Name,
+		Cover:        courseschema.PageURL,
+		Description:  courseschema.Description,
+		Duration:     strconv.Itoa(int(courseschema.TotalTimeMinutes)),
+		Date:         courseschema.ToType().Date.Format("2006-01-02 15:04:05"),
+		TeacherID:    courseschema.TeacherID,
+		ClassID:      courseschema.ClassID,
+		SubjectIDs:   subjectsIds,
+		CourseDetail: courseschema.CourseDetail,
+	})
+}
+
 // GetSubjects 获取所有科目
 // @Summary 获取课程列表
 // @Tags Course
@@ -255,12 +290,13 @@ func UpdateCourseHandler(c *gin.Context) {
 	}
 
 	course := &model.Course{
-		ID:          uint(req.Id),
-		Name:        req.Name,
-		Cover:       req.Cover,
-		Description: req.Description,
-		Duration:    req.Duration,
-		Date:        parsedTime,
+		ID:           uint(req.Id),
+		Name:         req.Name,
+		Cover:        req.Cover,
+		Description:  req.Description,
+		Duration:     req.Duration,
+		Date:         parsedTime,
+		CourseDetail: req.CourseDetail,
 	}
 
 	err = service.UpdateCourse(c, course, req.SubjectIDs, uint(duration))

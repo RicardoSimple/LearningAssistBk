@@ -63,7 +63,7 @@ func makeSubjects2Map(subjects []schema.Subject) map[int]string {
 
 // UpdateCourse 更新课程信息及其科目关联
 func UpdateCourse(ctx context.Context, course *model.Course, subjectIDs []uint, duration uint) error {
-	return dal.UpdateCourseWithSubjects(ctx, course.ID, course.Name, course.Description, course.Cover, subjectIDs, duration)
+	return dal.UpdateCourseWithSubjects(ctx, course.ID, course.Name, course.Description, course.Cover, subjectIDs, duration, course.CourseDetail)
 }
 func IncrementCourseView(ctx context.Context, courseID uint) error {
 	return dal.IncrementCourseView(ctx, courseID)
@@ -96,4 +96,12 @@ func GetHotNCourses(ctx context.Context, limit int) ([]*model.Course, error) {
 		res = append(res, course.ToType())
 	}
 	return res, nil
+}
+
+func GetCourseById(ctx context.Context, id uint) (*schema.Course, error) {
+	course, err := dal.GetCourseByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return course, nil
 }

@@ -45,6 +45,8 @@ func (c *ChatClient) Chat(messages []ChatMessage, model string, isReplyJson bool
 	//req.DefaultChatParam()
 	if isReplyJson {
 		req.ResponseFormat.Type = ResponseTypeJson
+	} else {
+		req.ResponseFormat.Type = ResponseTypeText
 	}
 	var resp Response
 	err := util.DoJsonPost(url, map[string]string{
